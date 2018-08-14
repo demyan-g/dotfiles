@@ -24,6 +24,10 @@
 (set-default-coding-systems 'utf-8)
 (set-default-font "Bitstream Vera Sans Mono 9")
 
+;; Indent without tab
+(setq-default indent-tabs-mode nil)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -34,7 +38,7 @@
     ("73c69e346ec1cb3d1508c2447f6518a6e582851792a8c0e57a22d6b9948071b4" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" default)))
  '(package-selected-packages
    (quote
-    (use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

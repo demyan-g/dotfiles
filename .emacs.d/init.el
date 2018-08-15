@@ -24,7 +24,7 @@
 (set-default-coding-systems 'utf-8)
 (set-default-font "Bitstream Vera Sans Mono 9")
 
-;; Indent without tab
+;; Indent without tab - just something
 (setq-default indent-tabs-mode nil)
 
 

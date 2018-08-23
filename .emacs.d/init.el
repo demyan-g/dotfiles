@@ -21,6 +21,7 @@
 (use-package magit :ensure t)
 (use-package elpy :ensure t)
 (use-package evil :ensure t)
+(use-package yaml-mode :ensure t)
 
 ;; Frame
 (menu-bar-mode -1)
@@ -44,9 +45,17 @@
 (set-default-font "Bitstream Vera Sans Mono 9")
 
 ;; Indent without tab
+(setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 
-
+;; YAML-mode related
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+(add-hook 'yaml-mode-hook
+          '(lambda ()
+             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+          
+;; auto-generated lines
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -57,7 +66,7 @@
     ("73c69e346ec1cb3d1508c2447f6518a6e582851792a8c0e57a22d6b9948071b4" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" default)))
  '(package-selected-packages
    (quote
-    (evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

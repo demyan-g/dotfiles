@@ -40,16 +40,33 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Frame / Window settings
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
 (display-time-mode +1)
 (line-number-mode +1)
 (column-number-mode +1)
-(when window-system (set-frame-size (selected-frame) 90 45))
+;; - in case, which is most of the time,
+;; - init.el is loaded first starting daemon process
+(defun new-frame-setup (frame)
+  "Setup for new FRAME."
+  (select-frame frame)
+  (if (display-graphic-p frame)
+      (progn
+        (menu-bar-mode -1)
+        (tool-bar-mode -1)
+        (scroll-bar-mode -1)
+        (set-frame-parameter (selected-frame) 'alpha '(95 75))
+        (set-frame-size (selected-frame) 90 45))))
+;; -- Run for already-existing frames
+(mapc 'new-frame-setup (frame-list))
+;; -- Run when a new frame is created
+(add-hook 'after-make-frame-functions 'new-frame-setup)
 
 ;; - Moving between windows in frame
 (windmove-default-keybindings)
+;; - Shrink / Enlarge window
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<up>") 'shrink-window)
+(global-set-key (kbd "S-C-<down>") 'enlarge-window)
 
 ;; Theme related
 (unless (package-installed-p 'zenburn-theme)
@@ -63,10 +80,18 @@
 ;; - UTF-8 as default encoding
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
+(prefer-coding-system 'utf-8-unix)
+(setq default-buffer-file-coding-system 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-clipboard-coding-system 'utf-8)
+
+;; - Font settings
 (add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 9"))
 (set-face-attribute 'default nil :font "BitStream Vera Sans Mono 9")
-(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo"))
-(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo"))
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 11))
+(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 11))
 
 ;; Indent without tab
 (setq-default tab-width 4)
@@ -127,7 +152,7 @@
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (smart-tabs-mode python-outline smartrep helm-flycheck helm py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (anti-zenburn-them smart-tabs-mode python-outline smartrep helm-flycheck helm py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

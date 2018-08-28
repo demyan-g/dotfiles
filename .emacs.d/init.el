@@ -31,6 +31,7 @@
 (use-package helm :ensure t)
 (use-package helm-flycheck :ensure t)
 (use-package smartrep :ensure t)
+(use-package smart-tabs-mode :ensure t)
 
 ;; Yasnippet
 (yas-global-mode t)
@@ -38,7 +39,7 @@
 ;; Flycheck
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-;; Frame
+;; Frame / Window settings
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -46,6 +47,9 @@
 (line-number-mode +1)
 (column-number-mode +1)
 (when window-system (set-frame-size (selected-frame) 90 45))
+
+;; - Moving between windows in frame
+(windmove-default-keybindings)
 
 ;; Theme related
 (unless (package-installed-p 'zenburn-theme)
@@ -59,11 +63,21 @@
 ;; - UTF-8 as default encoding
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
-(set-frame-font "Bitstream Vera Sans Mono 9")
+(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 9"))
+(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 9")
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo"))
+(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo"))
 
 ;; Indent without tab
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
+
+;; - smart-tabs-mode related
+(smart-tabs-insinuate 'c 'c++ 'java 'javascript 'python)
+(add-hook 'js-mode-hook
+          (lambda ()
+            (smart-tabs-mode-enable)
+            (smart-tambs-advice js-indent-line js-indent-level)))
 
 ;; Python-mode related
 (elpy-enable)
@@ -76,6 +90,10 @@
           (lambda ()
             (define-key python-mode-map (kbd "\C-m") 'newline-and-indent)
             (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
+
+;; - smart-tabs-mode hooked
+(add-hook 'python-mode-hook 'smart-tabs-mode-enable)
+(smart-tabs-advice python-indent-line-1 python-indent)
 
 ;; - Jedi setup
 (add-hook 'python-mode-hook 'jedi:setup)
@@ -109,7 +127,7 @@
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (python-outline smartrep helm-flycheck helm py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (smart-tabs-mode python-outline smartrep helm-flycheck helm py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -117,4 +135,5 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; init.el ends here
+(provide 'init)
+;;; init.el ends here

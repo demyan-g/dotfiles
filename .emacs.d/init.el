@@ -27,7 +27,6 @@
 (use-package jedi :ensure t)
 (use-package flycheck :ensure t)
 (use-package yasnippet :ensure t)
-(use-package py-autopep8 :ensure t)
 (use-package helm :ensure t)
 (use-package helm-flycheck :ensure t)
 (use-package smartrep :ensure t)
@@ -54,7 +53,7 @@
         (tool-bar-mode -1)
         (scroll-bar-mode -1)
         (set-frame-parameter (selected-frame) 'alpha '(95 75))
-        (set-frame-size (selected-frame) 90 45))))
+        (set-frame-size (selected-frame) 90 46))))
 ;; -- Run for already-existing frames
 (mapc 'new-frame-setup (frame-list))
 ;; -- Run when a new frame is created
@@ -108,13 +107,22 @@
 (elpy-enable)
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python3" . python-mode))
+(add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-(add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+;(use-package py-autopep8
+;  :ensure t
+;  :init (progn
+;          (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+;          (setq py-autopep8-options '("--ignore=E401"))))
 (add-hook 'python-mode-hook
           (lambda ()
             (define-key python-mode-map (kbd "\C-m") 'newline-and-indent)
-            (define-key python-mode-map (kbd "RET") 'newline-and-indent)))
+            (define-key python-mode-map (kbd "RET") 'newline-and-indent)
+            (setq indent-tabs-mode nil)
+            (setq tab-width 4)
+            (setq python-indent-offset 4)
+            (setq-local electric-indent-mode nil)
+            (setq electric-indent-chars (delq ?: electric-indent-chars))))
 
 ;; - smart-tabs-mode hooked
 (add-hook 'python-mode-hook 'smart-tabs-mode-enable)

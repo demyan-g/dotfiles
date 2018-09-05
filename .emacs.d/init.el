@@ -31,6 +31,16 @@
 (use-package helm-flycheck :ensure t)
 (use-package smartrep :ensure t)
 (use-package smart-tabs-mode :ensure t)
+(use-package powerline
+  :ensure t
+  :config
+  (progn
+    (use-package powerline-evil
+      :ensure t
+      :load-path "packages/powerline-evil"
+      :config
+      (progn
+        (powerline-evil-vim-color-theme)))))
 
 ;; Yasnippet
 (yas-global-mode t)
@@ -54,6 +64,7 @@
         (scroll-bar-mode -1)
         (set-frame-parameter (selected-frame) 'alpha '(95 75))
         (set-frame-size (selected-frame) 90 46))))
+
 ;; -- Run for already-existing frames
 (mapc 'new-frame-setup (frame-list))
 ;; -- Run when a new frame is created
@@ -107,7 +118,7 @@
 (elpy-enable)
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python" . python-mode))
+(add-to-list 'interpreter-mode-alist '("python3" . python-mode))
 
 ;(use-package py-autopep8
 ;  :ensure t
@@ -121,8 +132,8 @@
             (setq indent-tabs-mode nil)
             (setq tab-width 4)
             (setq python-indent-offset 4)
-            (setq-local electric-indent-mode nil)
-            (setq electric-indent-chars (delq ?: electric-indent-chars))))
+            (setq-local electric-indent-chars (delq ?\n electric-indent-chars))
+            ))
 
 ;; - smart-tabs-mode hooked
 (add-hook 'python-mode-hook 'smart-tabs-mode-enable)
@@ -160,7 +171,7 @@
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (anti-zenburn-them smart-tabs-mode python-outline smartrep helm-flycheck helm py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (powerline-evil anti-zenburn-them smart-tabs-mode python-outline smartrep helm-flycheck helm py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

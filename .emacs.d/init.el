@@ -41,6 +41,7 @@
       :config
       (progn
         (powerline-evil-vim-color-theme)))))
+(use-package whitespace :ensure t)
 
 ;; Yasnippet
 (yas-global-mode t)
@@ -85,6 +86,14 @@
   (package-install 'anti-zenburn-theme))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'zenburn t)
+
+;; Highlight current line
+(global-hl-line-mode +1)
+
+;; Hihhlight lines exceeded length 80
+(setq-default whitespace-line-column 80)
+(setq-default whitespace-style '(face lines-tail))
+(global-whitespace-mode +1)
 
 ;; Font/Encoding related
 ;; - UTF-8 as default encoding

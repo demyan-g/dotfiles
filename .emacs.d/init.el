@@ -63,7 +63,7 @@
         (menu-bar-mode -1)
         (tool-bar-mode -1)
         (scroll-bar-mode -1)
-        (set-frame-parameter (selected-frame) 'alpha '(95 75))
+        (set-frame-parameter (selected-frame) 'alpha '(96 80))
         (set-frame-size (selected-frame) 90 46))))
 
 ;; -- Run for already-existing frames

@@ -1,3 +1,5 @@
+;;; init.el --- Emacs initial configuration file
+
 ;;; package --- Summary
 ;;; Commentary:
 ;; Added by Package.el.  This must come before configurations of
@@ -32,17 +34,53 @@
 (use-package counsel :ensure t)
 (use-package ivy :demand
   :config
-  (setq ivy-use-virtual-buffers t
-        ivy-count-format "%d/%d "))
+  (setq ivy-wrap t
+        ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t
+;        ivy-height 20
+;        ivy-extra-directories nil
+        ivy-count-format "%d/%d "
+;        ivy-re-builders-alist '((t . ivy--regex-plus))
+        ))
 
 ;; minor
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Ivy-mode true
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Ivy / Swiper / Counsel related setting
 (ivy-mode 1)
 
-;; enable Swiper for i-search alternative
-(global-set-key "\C-s" 'swiper)
+;; -- Ivy-based interface to statndard commands
+;; --- enable Swiper for i-search alternative
+(global-set-key (kbd "C-s") 'swiper)
+
+;; --- enable Swiper search with line-number
+(defvar swiper-include-number-in-search t)
+
+;; --- Counsel settings
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
+;; -- Ivy-base interface to shell and system tools
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+
+;; -- magit related
+(setq magit-completing-read-function 'ivy-completing-read)
+
+;; -- projectile related
+(setq projectile-completion-system 'ivy)
+
+;; - END_OF Ivy/Swiper/Counsel related setting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Yasnippet
 (yas-global-mode t)
@@ -50,12 +88,13 @@
 ;; Flycheck
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-;; Frame / Window settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Frame / Window settings --- Frame >= Window
 (display-time-mode +1)
 (line-number-mode +1)
 (column-number-mode +1)
-;; - in case, which is most of the time,
-;; - init.el is loaded first starting daemon process
+;; -- in case, which is most of the time,
+;; -- init.el is loaded first starting daemon process
 (defun new-frame-setup (frame)
   "Setup for new FRAME."
   (select-frame frame)
@@ -71,13 +110,16 @@
 ;; -- Run when a new frame is created
 (add-hook 'after-make-frame-functions 'new-frame-setup)
 
-;; - Moving between windows in frame
+;; -- Moving between windows in frame
 (windmove-default-keybindings)
-;; - Shrink / Enlarge window
+;; -- Shrink / Enlarge window
 (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
 (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "S-C-<up>") 'shrink-window)
 (global-set-key (kbd "S-C-<down>") 'enlarge-window)
+
+;; - END_OF Frame / Window settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Theme related
 (unless (package-installed-p 'zenburn-theme)

@@ -22,6 +22,7 @@
   (require 'use-package))
 
 ;; - Ensure packages installed
+(use-package company :ensure t)
 (use-package magit :ensure t)
 (use-package evil :ensure t)
 (use-package yaml-mode :ensure t)
@@ -42,6 +43,12 @@
         ivy-count-format "%d/%d "
 ;        ivy-re-builders-alist '((t . ivy--regex-plus))
         ))
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
 
 ;; minor
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -80,6 +87,20 @@
 (setq projectile-completion-system 'ivy)
 
 ;; - END_OF Ivy/Swiper/Counsel related setting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Company related settings
+(global-company-mode)                   ; Enable company in any buffer
+(setq company-transformers '(company-sort-by-backend-importance))
+
+(setq company-idle-delay 0)             ; Default: 0.5
+(setq company-minimum-prefix-length 5)  ; Default: 4
+(setq company-selection-wrap-around t)  ; Goes to first element after laste element
+;(setq company-dabbrev-downcase nil)     ; NEED-TO-KNOW-WHAT-THIS-IS
+
+(setq completion-ignore-case t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Yasnippet
@@ -146,6 +167,21 @@
 (set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 11))
 (set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 11))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Projectile related settings
+(if (eq system-type 'windows-nt)
+    (setq projectile-project-search-path '("~/../../Workspace"))
+  (setq projectile-project-search-path '("~/Workspace")))
+
+(projectile-register-project-type 'npm '("package.json")
+                                  :compile "npm install"
+                                  :test "npm test"
+                                  :run "npm start"
+                                  :test-suffix ".spec")
+
+;; - END_OF Projectile related settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Indent without tab
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
@@ -202,6 +238,8 @@
           '(lambda ()
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
           
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; --- auto-generated lines below ---
 ;; auto-generated lines
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -214,7 +252,7 @@
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (projectile anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

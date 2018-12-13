@@ -1,3 +1,5 @@
+;;; init.el --- Emacs initial configuration file
+
 ;;; package --- Summary
 ;;; Commentary:
 ;; Added by Package.el.  This must come before configurations of
@@ -20,6 +22,7 @@
   (require 'use-package))
 
 ;; - Ensure packages installed
+(use-package company :ensure t)
 (use-package magit :ensure t)
 (use-package evil :ensure t)
 (use-package yaml-mode :ensure t)
@@ -27,21 +30,78 @@
 (use-package jedi :ensure t)
 (use-package flycheck :ensure t)
 (use-package yasnippet :ensure t)
-(use-package helm :ensure t)
-(use-package helm-flycheck :ensure t)
 (use-package smartrep :ensure t)
 (use-package smart-tabs-mode :ensure t)
-(use-package powerline
+(use-package counsel :ensure t)
+(use-package ivy :demand
+  :config
+  (setq ivy-wrap t
+        ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t
+;        ivy-height 20
+;        ivy-extra-directories nil
+        ivy-count-format "%d/%d "
+;        ivy-re-builders-alist '((t . ivy--regex-plus))
+        ))
+(use-package projectile
   :ensure t
   :config
-  (progn
-    (use-package powerline-evil
-      :ensure t
-      :load-path "packages/powerline-evil"
-      :config
-      (progn
-        (powerline-evil-vim-color-theme)))))
-(use-package whitespace :ensure t)
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+
+;; minor
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Ivy / Swiper / Counsel related setting
+(ivy-mode 1)
+
+;; -- Ivy-based interface to statndard commands
+;; --- enable Swiper for i-search alternative
+(global-set-key (kbd "C-s") 'swiper)
+
+;; --- enable Swiper search with line-number
+(defvar swiper-include-number-in-search t)
+
+;; --- Counsel settings
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
+;; -- Ivy-base interface to shell and system tools
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+
+;; -- magit related
+(setq magit-completing-read-function 'ivy-completing-read)
+
+;; -- projectile related
+(setq projectile-completion-system 'ivy)
+
+;; - END_OF Ivy/Swiper/Counsel related setting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Company related settings
+(global-company-mode)                   ; Enable company in any buffer
+(setq company-transformers '(company-sort-by-backend-importance))
+
+(setq company-idle-delay 0)             ; Default: 0.5
+(setq company-minimum-prefix-length 5)  ; Default: 4
+(setq company-selection-wrap-around t)  ; Goes to first element after laste element
+;(setq company-dabbrev-downcase nil)     ; NEED-TO-KNOW-WHAT-THIS-IS
+
+(setq completion-ignore-case t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Yasnippet
 (yas-global-mode t)
@@ -49,12 +109,13 @@
 ;; Flycheck
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-;; Frame / Window settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Frame / Window settings --- Frame >= Window
 (display-time-mode +1)
 (line-number-mode +1)
 (column-number-mode +1)
-;; - in case, which is most of the time,
-;; - init.el is loaded first starting daemon process
+;; -- in case, which is most of the time,
+;; -- init.el is loaded first starting daemon process
 (defun new-frame-setup (frame)
   "Setup for new FRAME."
   (select-frame frame)
@@ -63,21 +124,23 @@
         (menu-bar-mode -1)
         (tool-bar-mode -1)
         (scroll-bar-mode -1)
-        (set-frame-parameter (selected-frame) 'alpha '(96 80))
+        (set-frame-parameter (selected-frame) 'alpha '(95 75))
         (set-frame-size (selected-frame) 90 46))))
-
 ;; -- Run for already-existing frames
 (mapc 'new-frame-setup (frame-list))
 ;; -- Run when a new frame is created
 (add-hook 'after-make-frame-functions 'new-frame-setup)
 
-;; - Moving between windows in frame
+;; -- Moving between windows in frame
 (windmove-default-keybindings)
-;; - Shrink / Enlarge window
+;; -- Shrink / Enlarge window
 (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
 (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "S-C-<up>") 'shrink-window)
 (global-set-key (kbd "S-C-<down>") 'enlarge-window)
+
+;; - END_OF Frame / Window settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Theme related
 (unless (package-installed-p 'zenburn-theme)
@@ -86,14 +149,6 @@
   (package-install 'anti-zenburn-theme))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'zenburn t)
-
-;; Highlight current line
-(global-hl-line-mode +1)
-
-;; Hihhlight lines exceeded length 80
-(setq-default whitespace-line-column 80)
-(setq-default whitespace-style '(face lines-tail))
-(global-whitespace-mode +1)
 
 ;; Font/Encoding related
 ;; - UTF-8 as default encoding
@@ -112,6 +167,21 @@
 (set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 11))
 (set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 11))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Projectile related settings
+(if (eq system-type 'windows-nt)
+    (setq projectile-project-search-path '("~/../../Workspace"))
+  (setq projectile-project-search-path '("~/Workspace")))
+
+(projectile-register-project-type 'npm '("package.json")
+                                  :compile "npm install"
+                                  :test "npm test"
+                                  :run "npm start"
+                                  :test-suffix ".spec")
+
+;; - END_OF Projectile related settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Indent without tab
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
@@ -127,7 +197,7 @@
 (elpy-enable)
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python3" . python-mode))
+(add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
 ;(use-package py-autopep8
 ;  :ensure t
@@ -141,8 +211,8 @@
             (setq indent-tabs-mode nil)
             (setq tab-width 4)
             (setq python-indent-offset 4)
-            (setq-local electric-indent-chars (delq ?\n electric-indent-chars))
-            ))
+            (setq-local electric-indent-mode nil)
+            (setq electric-indent-chars (delq ?: electric-indent-chars))))
 
 ;; - smart-tabs-mode hooked
 (add-hook 'python-mode-hook 'smart-tabs-mode-enable)
@@ -168,6 +238,8 @@
           '(lambda ()
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
           
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; --- auto-generated lines below ---
 ;; auto-generated lines
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -180,7 +252,7 @@
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (powerline-evil anti-zenburn-them smart-tabs-mode python-outline smartrep helm-flycheck helm py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (projectile anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

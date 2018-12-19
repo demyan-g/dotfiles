@@ -50,6 +50,55 @@
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
 
+(use-package go-mode :ensure t)
+(use-package company-go :ensure t)
+
+;; - Java Language Server Protocol related
+(use-package treemacs :ensure t)
+(use-package lsp-mode :ensure t)
+(use-package hydra :ensure t)
+(use-package company-lsp :ensure t)
+(use-package lsp-ui :ensure t)
+(use-package lsp-java
+  :ensure t
+  :after lsp
+  :requires (lsp-ui-flycheck lsp-ui-sideline)
+  :config (add-hook 'java-mode-hook 'lsp)
+  :hook
+  (java-mode . (lambda () (add-to-list (make-local-variable 'company-backends) 'company-lsp)))
+  (java-mode . lsp-java-enable)
+  (java-mode . flycheck-mode)
+  (java-mode . (lambda () (lsp-ui-flycheck-enable t)))
+  (java-mode . lsp-ui-sideline-mode)
+  :config
+  (setq lsp-java-save-action-organize-imports nil))
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config
+  (dap-mode t)
+  (dap-ui-mode t))
+(use-package dap-java :after (lsp-java))
+(use-package lsp-java-treemacs :after (treemacs))
+
+;; - Groovy/Gradle related
+(use-package groovy-mode
+  :ensure t
+  :mode("\.groovy$" "\.gradle$")
+  :interpreter("gradle" "groovy")
+  :config
+  (autoload 'run-groovy "inf-groovy" "Run an inferior Groovy process")
+  (autoload 'inf-groovy-keys "inf-groovy" "Set local key defs for inf-groovy in groovy-mode")
+
+  ;; Some keys for
+  (add-hook 'groovy-mode-hook
+            '(lambda ()
+               (inf-groovy-keys))))
+(use-package groovy-imports :ensure t)
+(use-package flycheck-gradle
+  :ensure t
+  :defer t)
+  
 ;; minor
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -193,11 +242,47 @@
             (smart-tabs-mode-enable)
             (smart-tambs-advice js-indent-line js-indent-level)))
 
-;; Python-mode related
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Java-mode related
+(setq lsp-inhibit-message t)
+(setq lsp-ui-sideline-update-mode 'point)
+
+;; - END_OF Java related settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Python-mode related
 (elpy-enable)
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+
+;; - END_OF Python related settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - GoLang-mode related
+;; -- Go compiler path
+;(add-to-list 'exec-path (expand-file-name "xxx"))
+
+;; -- Tools from `go get` executable path
+(if (eq system-type 'windows-nt)
+    (add-to-list 'exec-path (expand-file-name "~/../../go/bin"))
+  (add-to-list 'exec-path (expand-file-name "~/.go/bin")))
+
+(add-hook 'go-mode-hook 'campany-mode)
+(add-hook 'go-mode-hook 'flycheck-mode)
+(add-hook 'go-mode-hook (lambda()
+                          (add-hook 'before-save-hook 'gofmt-before-save)
+                          (local-set-key (kbd "M-.") 'godef-jump)
+                          (set (make-local-variable 'company-backends) '(company-go))
+                          (company-mode)
+                          (setq indent-tabs-mode nil) ; not to user TAB for indent
+                          (setq c-basic-offset 4)     ; set tab-size to 4
+                          (setq tab-width 4)))        ; set tab0size to 4
+                          
+;; - END_OF GoLang related settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;(use-package py-autopep8
 ;  :ensure t
@@ -252,7 +337,7 @@
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (projectile anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (flycheck-gradle groovy-imports groovy-mode dap-mode lsp-java lsp-ui company-lsp lsp-mode company-go go-mode projectile anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

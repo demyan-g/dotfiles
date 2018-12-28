@@ -21,6 +21,8 @@
 (eval-when-compile
   (require 'use-package))
 
+(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
+
 ;; - Ensure packages installed
 (use-package company :ensure t)
 (use-package magit :ensure t)
@@ -61,17 +63,18 @@
 (use-package lsp-ui :ensure t)
 (use-package lsp-java
   :ensure t
+  :commands lsp-java-enable
   :after lsp
   :requires (lsp-ui-flycheck lsp-ui-sideline)
-  :config (add-hook 'java-mode-hook 'lsp)
+  :init (add-hook 'java-mode-hook #'lsp-java-enable)
+  :config
+  (add-hook 'java-mode-hook 'lsp-mode)
+  (add-hook 'java-mode-hook 'flycheck-mode)
+  (setq lsp-java-save-action-organize-imports nil)
   :hook
   (java-mode . (lambda () (add-to-list (make-local-variable 'company-backends) 'company-lsp)))
-  (java-mode . lsp-java-enable)
-  (java-mode . flycheck-mode)
   (java-mode . (lambda () (lsp-ui-flycheck-enable t)))
-  (java-mode . lsp-ui-sideline-mode)
-  :config
-  (setq lsp-java-save-action-organize-imports nil))
+  (java-mode . lsp-ui-sideline-mode))
 (use-package dap-mode
   :ensure t
   :after lsp-mode

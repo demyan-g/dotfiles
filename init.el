@@ -24,6 +24,7 @@
 (setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
 
 ;; - Ensure packages installed
+(use-package exec-path-from-shell :ensure t)
 (use-package company :ensure t)
 (use-package magit :ensure t)
 (use-package evil :ensure t)
@@ -258,7 +259,10 @@
 (elpy-enable)
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python" . python-mode))
+(add-to-list 'interpreter-mode-alist '("python3" . python-mode))
+(if (eq system-type 'windows-nt)
+    (setq python-shell-interpreter "python3.exe")
+  (setq python-shell-interpreter "/usr/local/bin/python3"))
 
 ;; - END_OF Python related settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -340,7 +344,7 @@
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (flycheck-gradle groovy-imports groovy-mode dap-mode lsp-java lsp-ui company-lsp lsp-mode company-go go-mode projectile anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (exec-path-from-shell flycheck-gradle groovy-imports groovy-mode dap-mode lsp-java lsp-ui company-lsp lsp-mode company-go go-mode projectile anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

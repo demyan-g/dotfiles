@@ -161,6 +161,7 @@
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 
 ;; -- magit related
+(global-set-key (kbd "C-x g") 'magit-status)
 (setq magit-completing-read-function 'ivy-completing-read)
 
 ;; -- projectile related

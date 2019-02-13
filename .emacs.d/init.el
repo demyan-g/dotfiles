@@ -354,7 +354,48 @@
 (add-hook 'yaml-mode-hook
           '(lambda ()
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-          
+
+;; PostgreSQL related
+(add-hook 'sql-interactive-mode-hook
+          (lambda ()
+            (toggle-truncate-lines t)))
+(sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
+(sql-set-product-feature 'postgres :prompt-cont-regexp "^[-[:alnum:]_]*[-(][#>] ")
+
+(defun psql-connect (product connection)
+  (setq sql-product product)
+  (sql-connect connection))
+
+(setq sql-connection-alist
+      '((psql-nbk-postgres (sql-product 'postgres)
+                           (sql-port 5432)
+                           (sql-server "10.143.96.13")
+                           (sql-user "postgres")
+                           (sql-password "postgres")
+                           (sql-database "postgres"))
+        (psql-nbk-dwhtest (sql-product 'postgres)
+                          (sql-port 5432)
+                          (sql-server "10.143.96.13")
+                          (sql-user "dwhtest")
+                          (sql-password "dwhtest")
+                          (sql-database "postgres"))
+        (psql-nbk-perftest (sql-product 'postgres)
+                           (sql-port 5432)
+                           (sql-server "10.143.96.12")
+                           (sql-user "postgres")
+                           (sql-password "postgres")
+                           (sql-database "postgres"))))
+
+(defun psql-nbk-postgres-connect ()
+  (interactive)
+  (psql-connect 'postgres 'psql-nbk-postgres))
+(defun psql-nbk-dwhtest-connect ()
+  (interactive)
+  (psql-connect 'postgres 'psql-nbk-dwhtest))
+(defun psql-nbk-perftest-connect ()
+  (interactive)
+  (psql-connect 'postgres 'psql-nbk-perftest))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; --- auto-generated lines below ---
 ;; auto-generated lines

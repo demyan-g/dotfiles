@@ -24,7 +24,17 @@
 (setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
 
 ;; - Ensure packages installed
-(use-package org-bullets :ensure t)
+(use-package org-bullets
+  :ensure t
+  :init
+  (setq org-bullets-bullet-list
+        '("◉" "◎" "<img draggable="false" class="emoji" alt="⚫" src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/26ab.svg">" "○" "►" "◇"))
+  (setq org-todo-keywords
+        '((sequence "☛ TODO(t)" "|" "<img draggable="false" class="emoji" alt="✔" src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/2714.svg"> DONE(d)")
+          (sequence "⚑ WAITING(w)" "|")
+          (sequence "|" "✘ CANCELED(c)")))
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 (use-package company :ensure t)
 (use-package magit :ensure t)
 ;; (use-package evil :ensure t)

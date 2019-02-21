@@ -24,9 +24,10 @@
 (setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
 
 ;; - Ensure packages installed
+(use-package org-bullets :ensure t)
 (use-package company :ensure t)
 (use-package magit :ensure t)
-(use-package evil :ensure t)
+;; (use-package evil :ensure t)
 (use-package yaml-mode :ensure t)
 (use-package elpy :ensure t)
 (use-package jedi :ensure t)
@@ -168,6 +169,13 @@
 (setq projectile-completion-system 'ivy)
 
 ;; - END_OF Ivy/Swiper/Counsel related setting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Org-mode related settings
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;; - END_OF Org-mode related setting
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

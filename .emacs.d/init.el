@@ -24,9 +24,10 @@
 (setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
 
 ;; - Ensure packages installed
+(use-package org-bullets :ensure t)
 (use-package company :ensure t)
 (use-package magit :ensure t)
-(use-package evil :ensure t)
+;; (use-package evil :ensure t)
 (use-package yaml-mode :ensure t)
 (use-package elpy :ensure t)
 (use-package jedi :ensure t)
@@ -55,7 +56,7 @@
 (use-package go-mode :ensure t)
 (use-package company-go :ensure t)
 
-;; - Java Language Server Protocol related
+;; -- Java Language Server Protocol related
 (use-package treemacs :ensure t)
 (use-package lsp-mode :ensure t)
 (use-package hydra :ensure t)
@@ -84,7 +85,7 @@
 (use-package dap-java :after (lsp-java))
 (use-package lsp-java-treemacs :after (treemacs))
 
-;; - Groovy/Gradle related
+;; -- Groovy/Gradle related
 (use-package groovy-mode
   :ensure t
   :mode("\.groovy$" "\.gradle$")
@@ -102,7 +103,7 @@
   :ensure t
   :defer t)
 
-;; - Slack client configure
+;; -- Slack client configure
 (use-package slack
   :ensure t
   :commands (slack-start)
@@ -123,13 +124,14 @@
   :init
   (setq alert-default-style 'notifier))
 
-;; - Reddit client configure
+;; -- Reddit client configure
 (use-package md4rd
   :ensure t
   :commands (md4rd)
   :config
   (setq md4rd-subs-active '(emacs hackintosh))
   )
+
 ;; minor
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -168,6 +170,13 @@
 (setq projectile-completion-system 'ivy)
 
 ;; - END_OF Ivy/Swiper/Counsel related setting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Org-mode related settings
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;; - END_OF Org-mode related setting
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

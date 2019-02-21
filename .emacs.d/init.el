@@ -28,9 +28,9 @@
   :ensure t
   :init
   (setq org-bullets-bullet-list
-        '("◉" "◎" "<img draggable="false" class="emoji" alt="⚫" src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/26ab.svg">" "○" "►" "◇"))
+        '("◉" "◎" "<img draggable=\"false\" class=\"emoji\" alt=\"⚫\" src=\"https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/26ab.svg\">" "○" "►" "◇"))
   (setq org-todo-keywords
-        '((sequence "☛ TODO(t)" "|" "<img draggable="false" class="emoji" alt="✔" src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/2714.svg"> DONE(d)")
+        '((sequence "☛ TODO(t)" "|" "<img draggable=\"false\" class=\"emoji\" alt=\"✔\" src=\"https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/2714.svg\"> DONE(d)")
           (sequence "⚑ WAITING(w)" "|")
           (sequence "|" "✘ CANCELED(c)")))
   :config

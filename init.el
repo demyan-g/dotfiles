@@ -24,6 +24,9 @@
 (setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
 
 ;; - Ensure packages installed
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
 (use-package org-bullets
   :ensure t
   :init
@@ -248,6 +251,12 @@
   (package-install 'anti-zenburn-theme))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'zenburn t)
+
+;; Mode-Line related : doom-mode-line for now
+(setq doom-modeline-buffer-file-name-style 'truncate-with-project)
+(setq doom-modeline-icon t)
+(setq doom-modeline-major-mode-icon t)
+;;(setq doom-modeline-major-mode-color-icon nil)
 
 ;; Font/Encoding related
 ;; - UTF-8 as default encoding

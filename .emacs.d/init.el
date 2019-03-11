@@ -24,6 +24,9 @@
 (setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
 
 ;; - Ensure packages installed
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
 (use-package org-bullets
   :ensure t
   :init
@@ -66,7 +69,7 @@
 (use-package go-mode :ensure t)
 (use-package company-go :ensure t)
 
-;; -- Java Language Server Protocol related
+;; - Java Language Server Protocol related
 (use-package treemacs :ensure t)
 (use-package lsp-mode :ensure t)
 (use-package hydra :ensure t)
@@ -95,7 +98,7 @@
 (use-package dap-java :after (lsp-java))
 (use-package lsp-java-treemacs :after (treemacs))
 
-;; -- Groovy/Gradle related
+;; - Groovy/Gradle related
 (use-package groovy-mode
   :ensure t
   :mode("\.groovy$" "\.gradle$")
@@ -113,7 +116,7 @@
   :ensure t
   :defer t)
 
-;; -- Slack client configure
+;; - Slack client configure
 (use-package slack
   :ensure t
   :commands (slack-start)
@@ -134,14 +137,13 @@
   :init
   (setq alert-default-style 'notifier))
 
-;; -- Reddit client configure
+;; - Reddit client configure
 (use-package md4rd
   :ensure t
   :commands (md4rd)
   :config
   (setq md4rd-subs-active '(emacs hackintosh))
   )
-
 ;; minor
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -184,7 +186,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Org-mode related settings
-;;
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
 ;; - END_OF Org-mode related setting
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -248,6 +251,12 @@
   (package-install 'anti-zenburn-theme))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'zenburn t)
+
+;; Mode-Line related : doom-mode-line for now
+(setq doom-modeline-buffer-file-name-style 'truncate-with-project)
+(setq doom-modeline-icon t)
+(setq doom-modeline-major-mode-icon t)
+;;(setq doom-modeline-major-mode-color-icon nil)
 
 ;; Font/Encoding related
 ;; - UTF-8 as default encoding

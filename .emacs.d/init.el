@@ -77,10 +77,9 @@
 (use-package lsp-ui :ensure t)
 (use-package lsp-java
   :ensure t
-  :commands lsp-java-enable
   :after lsp
   :requires (lsp-ui-flycheck lsp-ui-sideline)
-  :init (add-hook 'java-mode-hook #'lsp-java-enable)
+  :init (add-hook 'java-mode-hook #'lsp)
   :config
   (add-hook 'java-mode-hook 'lsp-mode)
   (add-hook 'java-mode-hook 'flycheck-mode)
@@ -316,6 +315,37 @@
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
+;(use-package py-autopep8
+;  :ensure t
+;  :init (progn
+;          (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+;          (setq py-autopep8-options '("--ignore=E401"))))
+(add-hook 'python-mode-hook
+          (lambda ()
+            (define-key python-mode-map (kbd "\C-m") 'newline-and-indent)
+            (define-key python-mode-map (kbd "RET") 'newline-and-indent)
+            (setq indent-tabs-mode nil)
+            (setq tab-width 4)
+            (setq python-indent-offset 4)
+            (setq-local electric-indent-mode nil)
+            (setq electric-indent-chars (delq ?: electric-indent-chars))))
+
+;; -- smart-tabs-mode hooked
+(add-hook 'python-mode-hook 'smart-tabs-mode-enable)
+(smart-tabs-advice python-indent-line-1 python-indent)
+
+;; -- Jedi setup
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq elpy-rpc-backend "jedi")
+(setq jedi:complete-on-dot t)
+(when (require 'flycheck nil t)
+  (remove-hook 'elpy-modules 'elpy-module-flymake)
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+(define-key elpy-mode-map (kbd "C-c C-v") 'helm-flycheck)
+(smartrep-define-key elpy-mode-map "C-c"
+                     '(("C-n" . flycheck-next-error)
+                       ("C-p" . flycheck-previous-error)))
+
 ;; - END_OF Python related settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -343,46 +373,14 @@
 ;; - END_OF GoLang related settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;(use-package py-autopep8
-;  :ensure t
-;  :init (progn
-;          (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-;          (setq py-autopep8-options '("--ignore=E401"))))
-(add-hook 'python-mode-hook
-          (lambda ()
-            (define-key python-mode-map (kbd "\C-m") 'newline-and-indent)
-            (define-key python-mode-map (kbd "RET") 'newline-and-indent)
-            (setq indent-tabs-mode nil)
-            (setq tab-width 4)
-            (setq python-indent-offset 4)
-            (setq-local electric-indent-mode nil)
-            (setq electric-indent-chars (delq ?: electric-indent-chars))))
-
-;; - smart-tabs-mode hooked
-(add-hook 'python-mode-hook 'smart-tabs-mode-enable)
-(smart-tabs-advice python-indent-line-1 python-indent)
-
-;; - Jedi setup
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq elpy-rpc-backend "jedi")
-(setq jedi:complete-on-dot t)
-
-(when (require 'flycheck nil t)
-  (remove-hook 'elpy-modules 'elpy-module-flymake)
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
-(define-key elpy-mode-map (kbd "C-c C-v") 'helm-flycheck)
-(smartrep-define-key elpy-mode-map "C-c"
-                     '(("C-n" . flycheck-next-error)
-                       ("C-p" . flycheck-previous-error)))
-
-;; YAML-mode related
+;; - YAML-mode related
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
 (add-hook 'yaml-mode-hook
           '(lambda ()
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
-;; PostgreSQL related
+;; - PostgreSQL related
 (add-hook 'sql-interactive-mode-hook
           (lambda ()
             (toggle-truncate-lines t)))
@@ -422,6 +420,13 @@
 (defun psql-nbk-perftest-connect ()
   (interactive)
   (psql-connect 'postgres 'psql-nbk-perftest))
+
+;; - Shell related
+(if (eq system-type 'windows-nt)
+    (progn (setq explicit-shell-file-name "~/../../local/Git/git-bash.exe")
+           (setq explicit-bash.exe-args '("--login" "-i"))
+           (setq shell-file-name explicit-shell-file-name)
+           (setenv "SHELL" shell-file-name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; --- auto-generated lines below ---

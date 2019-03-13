@@ -280,10 +280,10 @@
 (set-clipboard-coding-system 'utf-8)
 
 ;; - Font settings
-(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 9"))
-(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 9")
-(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 11))
-(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 11))
+(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 13"))
+(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 13")
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 15))
+(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 15))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Projectile related settings

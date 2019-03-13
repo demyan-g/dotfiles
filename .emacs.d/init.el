@@ -70,10 +70,18 @@
 (use-package company-go :ensure t)
 
 ;; - Java Language Server Protocol related
-(use-package treemacs :ensure t)
 (use-package lsp-mode :ensure t)
 (use-package hydra :ensure t)
 (use-package company-lsp :ensure t)
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (treemacs-resize-icons 15)))
 (use-package lsp-ui :ensure t)
 (use-package lsp-java
   :ensure t
@@ -96,6 +104,9 @@
   (dap-ui-mode t))
 (use-package dap-java :after (lsp-java))
 (use-package lsp-java-treemacs :after (treemacs))
+(use-package treemacs-projectile
+  :after treemacs projectile
+  :ensure t)
 
 ;; - Groovy/Gradle related
 (use-package groovy-mode
@@ -269,10 +280,10 @@
 (set-clipboard-coding-system 'utf-8)
 
 ;; - Font settings
-(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 13"))
-(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 13")
-(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 15))
-(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 15))
+(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 9"))
+(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 9")
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 11))
+(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 11))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Projectile related settings

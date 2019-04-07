@@ -21,7 +21,7 @@
 (eval-when-compile
   (require 'use-package))
 
-(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
+(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/lsp-jdt-server/"))
 
 ;; - Ensure packages installed
 (use-package doom-modeline

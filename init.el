@@ -77,15 +77,15 @@
 (use-package lsp-mode :ensure t)
 (use-package hydra :ensure t)
 (use-package company-lsp :ensure t)
-(use-package treemacs
-  :ensure t
-  :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :config
-  (progn
-    (treemacs-resize-icons 11)))
+;; (use-package treemacs
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (with-eval-after-load 'winum
+;;     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+;;   :config
+;;   (progn
+;;     (treemacs-resize-icons 11)))
 (use-package lsp-ui :ensure t)
 (use-package lsp-java
   :ensure t
@@ -107,10 +107,10 @@
   (dap-mode t)
   (dap-ui-mode t))
 (use-package dap-java :after (lsp-java))
-(use-package lsp-java-treemacs :after (treemacs))
-(use-package treemacs-projectile
-  :after treemacs projectile
-  :ensure t)
+;; (use-package lsp-java-treemacs :after (treemacs))
+;; (use-package treemacs-projectile
+;;   :after treemacs projectile
+;;   :ensure t)
 
 ;; - Groovy/Gradle related
 (use-package groovy-mode

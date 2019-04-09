@@ -21,9 +21,13 @@
 (eval-when-compile
   (require 'use-package))
 
-(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
+(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/lsp-jdt-server/"))
 
 ;; - Ensure packages installed
+(use-package paradox
+  :ensure t
+  :custom
+  (paradox-github-token t))
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
@@ -81,7 +85,7 @@
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :config
   (progn
-    (treemacs-resize-icons 15)))
+    (treemacs-resize-icons 11)))
 (use-package lsp-ui :ensure t)
 (use-package lsp-java
   :ensure t
@@ -280,10 +284,10 @@
 (set-clipboard-coding-system 'utf-8)
 
 ;; - Font settings
-(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 13"))
-(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 13")
-(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 15))
-(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 15))
+(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 9"))
+(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 9")
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 11))
+(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 11))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Projectile related settings

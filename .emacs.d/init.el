@@ -21,9 +21,13 @@
 (eval-when-compile
   (require 'use-package))
 
-(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/server/"))
+(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/lsp-jdt-server/"))
 
 ;; - Ensure packages installed
+(use-package paradox
+  :ensure t
+  :custom
+  (paradox-github-token t))
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
@@ -81,7 +85,7 @@
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :config
   (progn
-    (treemacs-resize-icons 15)))
+    (treemacs-resize-icons 11)))
 (use-package lsp-ui :ensure t)
 (use-package lsp-java
   :ensure t

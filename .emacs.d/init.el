@@ -21,8 +21,6 @@
 (eval-when-compile
   (require 'use-package))
 
-(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/lsp-jdt-server/"))
-
 ;; - Ensure packages installed
 (use-package paradox
   :ensure t
@@ -42,6 +40,7 @@
           (sequence "|" "✘ CANCELED(c)")))
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+(use-package plantuml-mode :ensure t)
 (use-package company :ensure t)
 (use-package magit :ensure t)
 ;; (use-package evil :ensure t)
@@ -74,6 +73,7 @@
 (use-package company-go :ensure t)
 
 ;; - Java Language Server Protocol related
+(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/lsp-jdt-server/"))
 (use-package lsp-mode :ensure t)
 (use-package hydra :ensure t)
 (use-package company-lsp :ensure t)
@@ -199,8 +199,52 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; - Org-mode related settings
+;; - Org-mode and Plugins related settings
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;; -- PlantUML related
+(autoload 'plantuml-mode "platuml-mode" "PlantUML mode" t)
+;; --- path to platuml.jar and options, key-map
+(setq plantuml-jar-path "~/.emacs.d/lib/plantuml.jar")
+(setq org-plantuml-jar-path "~/.emacs.d/lib/plantuml.jar")
+
+(setq plantuml-java-options "")
+(setq plantuml-options "-charset UTF-8")
+
+(setq plantuml-mode-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map (kbd "C-c C-c") 'plantuml-execute)
+        map))
+
+;; -- register plantuml to org-babel languages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((plantuml .t)))
+
+;; -- file extensions map
+(add-to-list 'auto-mode-alist '("\.pu$" . plantuml-mode))
+(add-to-list 'auto-mode-alist '("\\.uml\\'" . plantuml-mode))
+
+;; -- plain plantuml execution
+(defun plantuml-execute ()
+  (interactive)
+  (when (buffer-modified-p)
+    (map-y-or-n-p "Save this buffer before executing PlantUML?"
+                  'save-buffer (list (current-buffer))))
+  (let ((code (buffer-string))
+        out-file
+        cmd)
+    (when (string-match "^\\s-*@startuml\\s-+\\(\\S-+\\)\\s*$" code)
+      (setq out-file (match-string 1 code)))
+    (setq cmd (concat
+               "java -jar " plantuml-java-options " "
+               (shell-quote-argument plantuml-jar-path) " "
+               (and out-file (concat "-t" (file-name-extension out-file))) " "
+               plantuml-options " "
+               (buffer-file-name)))
+    (message cmd)
+    (shell-command cmd)
+    (message "done")))
 
 ;; - END_OF Org-mode related setting
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

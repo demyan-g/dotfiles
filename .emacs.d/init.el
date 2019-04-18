@@ -73,10 +73,10 @@
 (use-package company-go :ensure t)
 
 ;; - Java Language Server Protocol related
-(setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/lsp-jdt-server/"))
-(use-package lsp-mode :ensure t)
-(use-package hydra :ensure t)
-(use-package company-lsp :ensure t)
+;; (setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/lsp-jdt-server/"))
+;; (use-package lsp-mode :ensure t)
+;; (use-package hydra :ensure t)
+;; (use-package company-lsp :ensure t)
 ;; (use-package treemacs
 ;;   :ensure t
 ;;   :defer t
@@ -86,31 +86,113 @@
 ;;   :config
 ;;   (progn
 ;;     (treemacs-resize-icons 11)))
-(use-package lsp-ui :ensure t)
-(use-package lsp-java
-  :ensure t
-  :after lsp
-  :requires (lsp-ui-flycheck lsp-ui-sideline)
-  :init (add-hook 'java-mode-hook #'lsp)
-  :config
-  (add-hook 'java-mode-hook 'lsp-mode)
-  (add-hook 'java-mode-hook 'flycheck-mode)
-  (setq lsp-java-save-action-organize-imports nil)
-  :hook
-  (java-mode . (lambda () (add-to-list (make-local-variable 'company-backends) 'company-lsp)))
-  (java-mode . (lambda () (lsp-ui-flycheck-enable t)))
-  (java-mode . lsp-ui-sideline-mode))
-(use-package dap-mode
-  :ensure t
-  :after lsp-mode
-  :config
-  (dap-mode t)
-  (dap-ui-mode t))
-(use-package dap-java :after (lsp-java))
+;; (use-package lsp-ui :ensure t)
+;; (use-package lsp-java
+;;   :ensure t
+;;   :after lsp
+;;   :requires (lsp-ui-flycheck lsp-ui-sideline)
+;;   :init (add-hook 'java-mode-hook #'lsp)
+;;   :config
+;;   (add-hook 'java-mode-hook 'lsp-mode)
+;;   (add-hook 'java-mode-hook 'flycheck-mode)
+;;   (setq lsp-java-save-action-organize-imports nil)
+;;   :hook
+;;   (java-mode . (lambda () (add-to-list (make-local-variable 'company-backends) 'company-lsp)))
+;;   (java-mode . (lambda () (lsp-ui-flycheck-enable t)))
+;;   (java-mode . lsp-ui-sideline-mode))
+;; (use-package dap-mode
+;;   :ensure t
+;;   :after lsp-mode
+;;   :config
+;;   (dap-mode t)
+;;   (dap-ui-mode t))
+;; (use-package dap-java :after (lsp-java))
 ;; (use-package lsp-java-treemacs :after (treemacs))
 ;; (use-package treemacs-projectile
 ;;   :after treemacs projectile
 ;;   :ensure t)
+
+;; - Java minor mode - Meghanada related
+(use-package smartparens :ensure t)
+(use-package rainbow-delimiters :ensure t)
+(use-package highlight-symbol :ensure t)
+(use-package autodisass-java-bytecode
+  :ensure t
+  :defer t)
+(use-package google-c-style
+  :defer t
+  :ensure t
+  :commands
+  (google-set-c-style))
+(use-package meghanada
+  ;; :after google-c-style smartparens rainbow-delimiters highlight-symbol
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'java-mode-hook
+            (lambda ()
+              (google-set-c-style)
+              (google-make-newline-indent)
+              (meghanada-mode t)
+              (smartparens-mode t)
+              (rainbow-delimiters-mode t)
+              (highlight-symbol-mode t)
+              (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
+
+  :config
+  (use-package realgud
+    :ensure t)
+  (setq indent-tabs-mode nil)
+  (setq tab-width 4)
+  (setq c-basic-offset 4)
+  (setq meghanada-server-remote-debug t)
+  (setq meghanada-javac-xlint "-Xlint:all,-processing")
+  :bind
+  (:map meghanada-mode-map
+        ("C-S-t" . meghanada-switch-testcase)
+        ("M-RET" . meghanada-local-variable)
+        ("C-M-." . counsel-imenu)
+        ("M-r" . meghanada-reference)
+        ("M-t" . meghanada-typeinfo)
+        ("C-z" . hydra-meghanada/body))
+  :commands
+  (meghanada-mode))
+
+(defhydra hydra-meghanada (:hint nil :exit t)
+  "
+^Edit^                           ^Tast or Task^
+^^^^^^-------------------------------------------------------
+_f_: meghanada-compile-file      _m_: meghanada-restart
+_c_: meghanada-compile-project   _t_: meghanada-run-task
+_o_: meghanada-optimize-import   _j_: meghanada-run-junit-test-case
+_s_: meghanada-switch-test-case  _J_: meghanada-run-junit-class
+_v_: meghanada-local-variable    _R_: meghanada-run-junit-recent
+_i_: meghanada-import-all        _r_: meghanada-reference
+_g_: magit-status                _T_: meghanada-typeinfo
+_l_: counsel-git
+_q_: exit
+"
+  ("f" meghanada-compile-file)
+  ("m" meghanada-restart)
+
+  ("c" meghanada-compile-project)
+  ("o" meghanada-optimize-import)
+  ("s" meghanada-switch-test-case)
+  ("v" meghanada-local-variable)
+  ("i" meghanada-import-all)
+
+  ("g" magit-status)
+  ("l" counsel-git)
+
+  ("t" meghanada-run-task)
+  ("T" meghanada-typeinfo)
+  ("j" meghanada-run-junit-test-case)
+  ("J" meghanada-run-junit-class)
+  ("R" meghanada-run-junit-recent)
+  ("r" meghanada-reference)
+
+  ("q" exit)
+  ("z" nil "leave"))
 
 ;; - Groovy/Gradle related
 (use-package groovy-mode

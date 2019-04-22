@@ -72,46 +72,6 @@
 (use-package go-mode :ensure t)
 (use-package company-go :ensure t)
 
-;; - Java Language Server Protocol related
-;; (setq lsp-java-server-install-dir (expand-file-name "~/.emacs.d/lsp-jdt-server/"))
-;; (use-package lsp-mode :ensure t)
-;; (use-package hydra :ensure t)
-;; (use-package company-lsp :ensure t)
-;; (use-package treemacs
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (with-eval-after-load 'winum
-;;     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-;;   :config
-;;   (progn
-;;     (treemacs-resize-icons 11)))
-;; (use-package lsp-ui :ensure t)
-;; (use-package lsp-java
-;;   :ensure t
-;;   :after lsp
-;;   :requires (lsp-ui-flycheck lsp-ui-sideline)
-;;   :init (add-hook 'java-mode-hook #'lsp)
-;;   :config
-;;   (add-hook 'java-mode-hook 'lsp-mode)
-;;   (add-hook 'java-mode-hook 'flycheck-mode)
-;;   (setq lsp-java-save-action-organize-imports nil)
-;;   :hook
-;;   (java-mode . (lambda () (add-to-list (make-local-variable 'company-backends) 'company-lsp)))
-;;   (java-mode . (lambda () (lsp-ui-flycheck-enable t)))
-;;   (java-mode . lsp-ui-sideline-mode))
-;; (use-package dap-mode
-;;   :ensure t
-;;   :after lsp-mode
-;;   :config
-;;   (dap-mode t)
-;;   (dap-ui-mode t))
-;; (use-package dap-java :after (lsp-java))
-;; (use-package lsp-java-treemacs :after (treemacs))
-;; (use-package treemacs-projectile
-;;   :after treemacs projectile
-;;   :ensure t)
-
 ;; - Java minor mode - Meghanada related
 (use-package smartparens :ensure t)
 (use-package rainbow-delimiters :ensure t)
@@ -443,8 +403,6 @@ _q_: exit
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Java-mode related
-(setq lsp-inhibit-message t)
-(setq lsp-ui-sideline-update-mode 'point)
 
 ;; - END_OF Java related settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

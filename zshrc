@@ -36,4 +36,4 @@ antigen bundle git
 antigen apply
 
 export PATH=/usr/local/bin:$PATH
-export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATHexport PATH="/usr/local/sbin:$PATH"

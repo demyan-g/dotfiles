@@ -97,7 +97,9 @@
               (smartparens-mode t)
               (rainbow-delimiters-mode t)
               (highlight-symbol-mode t)
-              (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
+              ;; (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)
+	      )
+            )
 
   :config
   (use-package realgud
@@ -370,10 +372,10 @@ _q_: exit
 (set-clipboard-coding-system 'utf-8)
 
 ;; - Font settings
-(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 13"))
-(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 13")
-(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 15))
-(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 15))
+(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 12"))
+(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 12")
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 14))
+(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 14))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Projectile related settings
@@ -480,45 +482,45 @@ _q_: exit
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 ;; - PostgreSQL related
-(add-hook 'sql-interactive-mode-hook
-          (lambda ()
-            (toggle-truncate-lines t)))
-(sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
-(sql-set-product-feature 'postgres :prompt-cont-regexp "^[-[:alnum:]_]*[-(][#>] ")
+;; (add-hook 'sql-interactive-mode-hook
+;;           (lambda ()
+;;             (toggle-truncate-lines t)))
+;; (sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
+;; (sql-set-product-feature 'postgres :prompt-cont-regexp "^[-[:alnum:]_]*[-(][#>] ")
 
-(defun psql-connect (product connection)
-  (setq sql-product product)
-  (sql-connect connection))
+;; (defun psql-connect (product connection)
+;;   (setq sql-product product)
+;;   (sql-connect connection))
 
-(setq sql-connection-alist
-      '((psql-nbk-postgres (sql-product 'postgres)
-                           (sql-port 5432)
-                           (sql-server "10.143.96.13")
-                           (sql-user "postgres")
-                           (sql-password "postgres")
-                           (sql-database "postgres"))
-        (psql-nbk-dwhtest (sql-product 'postgres)
-                          (sql-port 5432)
-                          (sql-server "10.143.96.13")
-                          (sql-user "dwhtest")
-                          (sql-password "dwhtest")
-                          (sql-database "postgres"))
-        (psql-nbk-perftest (sql-product 'postgres)
-                           (sql-port 5432)
-                           (sql-server "10.143.96.12")
-                           (sql-user "postgres")
-                           (sql-password "postgres")
-                           (sql-database "postgres"))))
+;; (setq sql-connection-alist
+;;       '((psql-nbk-postgres (sql-product 'postgres)
+;;                            (sql-port 5432)
+;;                            (sql-server "10.143.96.13")
+;;                            (sql-user "postgres")
+;;                            (sql-password "postgres")
+;;                            (sql-database "postgres"))
+;;         (psql-nbk-dwhtest (sql-product 'postgres)
+;;                           (sql-port 5432)
+;;                           (sql-server "10.143.96.13")
+;;                           (sql-user "dwhtest")
+;;                           (sql-password "dwhtest")
+;;                           (sql-database "postgres"))
+;;         (psql-nbk-perftest (sql-product 'postgres)
+;;                            (sql-port 5432)
+;;                            (sql-server "10.143.96.12")
+;;                            (sql-user "postgres")
+;;                            (sql-password "postgres")
+;;                            (sql-database "postgres"))))
 
-(defun psql-nbk-postgres-connect ()
-  (interactive)
-  (psql-connect 'postgres 'psql-nbk-postgres))
-(defun psql-nbk-dwhtest-connect ()
-  (interactive)
-  (psql-connect 'postgres 'psql-nbk-dwhtest))
-(defun psql-nbk-perftest-connect ()
-  (interactive)
-  (psql-connect 'postgres 'psql-nbk-perftest))
+;; (defun psql-nbk-postgres-connect ()
+;;   (interactive)
+;;   (psql-connect 'postgres 'psql-nbk-postgres))
+;; (defun psql-nbk-dwhtest-connect ()
+;;   (interactive)
+;;   (psql-connect 'postgres 'psql-nbk-dwhtest))
+;; (defun psql-nbk-perftest-connect ()
+;;   (interactive)
+;;   (psql-connect 'postgres 'psql-nbk-perftest))
 
 ;; - Shell related
 (if (eq system-type 'windows-nt)
@@ -541,7 +543,8 @@ _q_: exit
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (md4rd slack flycheck-gradle groovy-imports groovy-mode dap-mode lsp-java lsp-ui company-lsp lsp-mode company-go go-mode projectile anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics))))
+    (md4rd slack flycheck-gradle groovy-imports groovy-mode dap-mode lsp-java lsp-ui company-lsp lsp-mode company-go go-mode projectile anti-zenburn-them smart-tabs-mode python-outline smartrep py-autopep8 flycheck company-jedi jedi yaml-mode evil 2048-game evil-mode magit flymake-python-pyflakes elpy use-package anti-zenburn-theme zenburn-theme company-statistics)))
+ '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

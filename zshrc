@@ -1,6 +1,6 @@
 # PATH related
 export LOCAL=$HOME/local
-export PATH=/usr/local/sbin:$HOME/.jenv/bin:$PATH
+export PATH=/usr/local/bin:/usr/local/sbin:$HOME/.jenv/bin:$PATH
 export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
 
 # Enabling color

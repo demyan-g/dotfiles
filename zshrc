@@ -1,7 +1,18 @@
 # PATH related
 export LOCAL=$HOME/local
-export PATH=/usr/local/bin:/usr/local/sbin:$HOME/.jenv/bin:$PATH
+export GO_TOOLS=$HOME/go/bin
+export PATH=/usr/local/bin:/usr/local/sbin:$HOME/.jenv/bin:$GO_TOOLS:$PATH
 export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
+
+# Java related
+export JAVA_08_HOME=$(/usr/libexec/java_home -v1.8)
+export JAVA_11_HOME=$(/usr/libexec/java_home -v11)
+
+alias java8='export JAVA_HOME=$JAVA_08_HOME'
+alias java11='export JAVA_HOME=$JAVA_11_HOME'
+
+# - default to v11
+java11
 
 # Enabling color
 autoload colors zsh/terminfo

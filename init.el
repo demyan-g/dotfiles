@@ -8,6 +8,12 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 ;;; Code:
+
+;; native-comp related
+(setenv "LIBRARY_PATH" "/usr/local/opt/gcc/lib/gcc/10")
+(setq comp-speed 3
+      comp-deferred-compilation t)
+
 (package-initialize)
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -45,6 +51,8 @@
 (use-package company :ensure t)
 (use-package magit :ensure t)
 ;; (use-package evil :ensure t)
+
+
 (use-package yaml-mode :ensure t)
 (use-package elpy :ensure t)
 (use-package jedi :ensure t)
@@ -371,10 +379,10 @@ _q_: exit
 (set-clipboard-coding-system 'utf-8)
 
 ;; - Font settings
-(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 9"))
-(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 9")
-(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 11))
-(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 11))
+(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 11"))
+(set-face-attribute 'default nil :font "BitStream Vera Sans Mono 11")
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 13))
+(set-fontset-font t 'katakana-jisx0201 (font-spec :family "Meiryo" :size 13))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Projectile related settings

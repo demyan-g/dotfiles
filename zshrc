@@ -1,8 +1,14 @@
 # PATH related
 export LOCAL=$HOME/local
 export GO_TOOLS=$HOME/go/bin
-export PATH=/usr/local/bin:/usr/local/sbin:$HOME/.jenv/bin:$GO_TOOLS:$PATH
+export PATH=/usr/local/bin:/usr/local/sbin:$GO_TOOLS:/usr/local/opt/gnu-getopt/bin:$PATH
+export PATH=/usr/local/opt/texinfo/bin:$PATH
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
 export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
+
+export LDFLAGS="-L/usr/local/opt/libffi/lib"
+export CPPFLAGS="-I/usr/local/opt/libffi/include"
+export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 
 # Java related
 export JAVA_08_HOME=$(/usr/libexec/java_home -v1.8)
@@ -48,7 +54,7 @@ export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/usr/local/share/zsh-syntax-highlighting/h
 
 # zsh-completions
 fpath=(/usr/local/share/zsh-completions $fpath)
-#rm -f ~/.zcompdump; compinit
+rm -f ~/.zcompdump; compinit
 
 # Package Manager - antigen
 if [[ ! -f ~/dotfiles/antigen.zsh ]]; then

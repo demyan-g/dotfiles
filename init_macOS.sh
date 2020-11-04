@@ -2,17 +2,16 @@
 
 # - Installing basics
 brew install zsh tmux neovim/neovim/neovim python3 ag reattach-to-user-namespace
-brew tap caskroom/cask
 brew cask install iterm2
+
+chmod -R 755 /usr/local/share/zsh/
 
 # - Installing vim-plug
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-pip2 install neovim
 pip3 install neovim
 
 # - Installing Fonts
-brew tap caskroom/fonts
 brew cask install font-bitstream-vera
 
 # - Setting ZSH as Default Shell
@@ -28,4 +27,4 @@ mkdir -p ~/.config ~/.config/nvim
 ln -s ~/dotfiles/zshrc ~/.zshrc
 ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
 ln -s ~/dotfiles/vimrc ~/.config/nvim/init.vim
-
+ln -s ~/dotfiles/init.el ~/.emacs.d/init.el

@@ -1,5 +1,3 @@
-export ZSH_DISABLE_COMPFIX=true
-
 # PATH related
 export LOCAL=$HOME/local
 export GO_TOOLS=$HOME/go/bin

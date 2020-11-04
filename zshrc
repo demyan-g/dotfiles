@@ -1,3 +1,5 @@
+export ZSH_DISABLE_COMPFIX=true
+
 # PATH related
 export LOCAL=$HOME/local
 export GO_TOOLS=$HOME/go/bin
@@ -53,7 +55,13 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/usr/local/share/zsh-syntax-highlighting/highlighters
 
 # zsh-completions
-fpath=(/usr/local/share/zsh-completions $fpath)
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+
+  autoload -Uz compinit
+  compinit
+fi
+
 rm -f ~/.zcompdump; compinit
 
 # Package Manager - antigen

@@ -4,7 +4,7 @@
 brew install zsh tmux neovim/neovim/neovim python3 ag reattach-to-user-namespace
 brew cask install iterm2
 
-chmod -R 755 /usr/local/share/zsh/
+chmod go-w '/usr/local/share'
 
 # - Installing vim-plug
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \

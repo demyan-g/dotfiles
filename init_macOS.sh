@@ -1,10 +1,29 @@
 #!/bin/bash
 
+# - Installing Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
 # - Installing basics
-brew install zsh tmux neovim/neovim/neovim python3 ag reattach-to-user-namespace
-brew cask install iterm2
+brew install \
+     zsh tmux neovim python3 ag reattach-to-user-namespace \
+     autoconf awscli brew-cask-completion coreutils \
+     docker docker-machine ffmpeg flac ghostscript \
+     git gnu-sed gnutls gzip htop imagemagick jpeg \
+     jq mu msmtp neofetch parallel \
+     snappy texinfo tree unzip youtube-dl zip zsh-autosuggestions \
+     zsh-completions zsh-git-prompt zsh-history-substring-search \
+     zsh-syntax-highlighting zstd
+brew install --cask \
+     cyberduck discord google-chrome google-japanese-ime \
+     iterm2 microsoft-office microsoft-teams plex-media-server \
+     slack spotify spotify-now-playing tunnelblick virtualbox \
+     visual-studio-code vlc zoomus
 
 chmod go-w '/usr/local/share'
+
+# -- Installing JDKs and related tools
+brew install --cask adoptopenjdk8 adoptopenjdk11 adoptopenjdk
+brew install gradle && brew uninstall --ignore-dependencies openjdk
 
 # - Installing vim-plug
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
@@ -12,7 +31,7 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 pip3 install neovim
 
 # - Installing Fonts
-brew cask install font-bitstream-vera
+brew install --cask font-bitstream-vera
 
 # - Setting ZSH as Default Shell
 chsh -s /usr/local/bin/zsh

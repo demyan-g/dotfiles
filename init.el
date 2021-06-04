@@ -11,7 +11,7 @@
 
 ;; native-comp related
 (setenv "LIBRARY_PATH" "/usr/local/opt/gcc/lib/gcc/10")
-(setq comp-speed 3
+(setq comp-speed 2
       comp-deferred-compilation t)
 
 (package-initialize)
@@ -33,33 +33,46 @@
   :ensure t
   :custom
   (paradox-github-token t))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Mode-Line related : doom-mode-line for now
+(use-package all-the-icons
+  :if (window-system)
+  :demand t
+  :config
+  (unless (member "all-the-icons" (font-family-list))
+    (all-the-icons-install-fonts t)))
 (use-package doom-modeline
   :ensure t
+  :custom
+  (doom-modeline-buffer-file-name-style 'truncate-with-project)
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon t)
+  ;; (doom-modeline-major-mode-color-icon nil)
+
   :hook (after-init . doom-modeline-mode))
-(use-package org-bullets
-  :ensure t
-  :init
-  (setq org-bullets-bullet-list
-        '("◉" "◎" "<img draggable=\"false\" class=\"emoji\" alt=\"⚫\" src=\"https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/26ab.svg\">" "○" "►" "◇"))
-  (setq org-todo-keywords
-        '((sequence "☛ TODO(t)" "|" "<img draggable=\"false\" class=\"emoji\" alt=\"✔\" src=\"https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/2714.svg\"> DONE(d)")
-          (sequence "⚑ WAITING(w)" "|")
-          (sequence "|" "✘ CANCELED(c)")))
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-(use-package plantuml-mode :ensure t)
-(use-package company :ensure t)
-(use-package magit :ensure t)
-;; (use-package evil :ensure t)
+(use-package hide-mode-line
+  :hook
+  (() . hide-mode-line-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Key bindings related
+(use-package hydra
+  :demand t)
+(use-package use-package-hydra
+  :demand t
+  :after (hydra))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package yaml-mode :ensure t)
-(use-package elpy :ensure t)
-(use-package jedi :ensure t)
-(use-package flycheck :ensure t)
-(use-package yasnippet :ensure t)
-(use-package smartrep :ensure t)
-(use-package smart-tabs-mode :ensure t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Directories related - dired
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Candidates - Ivy / Coounsel / Swiper
 (use-package counsel :ensure t)
 (use-package ivy :demand
   :config
@@ -71,6 +84,47 @@
         ivy-count-format "%d/%d "
 ;        ivy-re-builders-alist '((t . ivy--regex-plus))
         ))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package beacon
+  :ensure t
+  :diminish beacon-mode
+  :require t
+  :config
+  (beacon-mode 1))
+
+(use-package volatile-highlights
+  :ensure t
+  :require t
+  :diminish volatile-highlights-mode
+  :config
+  (volatile-highlights-mode t))
+
+(use-package org-bullets
+  :ensure t
+  :init
+  (setq org-bullets-bullet-list
+        '("◉" "◎" "<img draggable=\"false\" class=\"emoji\" alt=\"⚫\" src=\"https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/26ab.svg\">" "○" "►" "◇"))
+  (setq org-todo-keywords
+        '((sequence "☛ TODO(t)" "|" "<img draggable=\"false\" class=\"emoji\" alt=\"✔\" src=\"https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/2714.svg\"> DONE(d)")
+          (sequence "⚑ WAITING(w)" "|")
+          (sequence "|" "✘ CANCELED(c)")))
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+
+
+(use-package plantuml-mode :ensure t)
+(use-package company :ensure t)
+(use-package magit :ensure t)
+(use-package yaml-mode :ensure t)
+;; (use-package elpy :ensure t)
+;; (use-package jedi :ensure t)
+;; (use-package flycheck :ensure t)
+(use-package yasnippet :ensure t)
+(use-package which-key :config (which-key-mode))
+(use-package smartrep :ensure t)
+(use-package smart-tabs-mode :ensure t)
 (use-package projectile
   :ensure t
   :config
@@ -93,75 +147,152 @@
   :ensure t
   :commands
   (google-set-c-style))
-(use-package meghanada
-  ;; :after google-c-style smartparens rainbow-delimiters highlight-symbol
-  :ensure t
-  :defer t
-  :init
-  (add-hook 'java-mode-hook
-            (lambda ()
-              (google-set-c-style)
-              (google-make-newline-indent)
-              (meghanada-mode t)
-              (smartparens-mode t)
-              (rainbow-delimiters-mode t)
-              (highlight-symbol-mode t)
-              (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
 
+;; Language Server related
+(use-package flymake :ensure t)
+(use-package lsp-mode
+  :hook ((java-mode       ; eclipse-jdtls
+          scala-mode      ; metals
+          js-mode         ; ts-ls (tsserver wrapper)
+          js-jsx-mode     ; ts-ls (tsserver wrapper)
+          typescript-mode ; ts-ls (tsserver wrapper)
+          python-mode     ; pyls (palantir)
+          web-mode
+          ) . lsp-deferred)
+  :commands (lsp lsp-deferred)
   :config
-  (use-package realgud
-    :ensure t)
-  (setq indent-tabs-mode nil)
-  (setq tab-width 4)
-  (setq c-basic-offset 4)
-  (setq meghanada-server-remote-debug t)
-  (setq meghanada-javac-xlint "-Xlint:all,-processing")
-  :bind
-  (:map meghanada-mode-map
-        ("C-S-t" . meghanada-switch-testcase)
-        ("M-RET" . meghanada-local-variable)
-        ("C-M-." . counsel-imenu)
-        ("M-r" . meghanada-reference)
-        ("M-t" . meghanada-typeinfo)
-        ("C-z" . hydra-meghanada/body))
-  :commands
-  (meghanada-mode))
+  (require 'lsp-clients)
+  (setq lsp-auto-guess-root t)
 
-(defhydra hydra-meghanada (:hint nil :exit t)
-  "
-^Edit^                           ^Tast or Task^
-^^^^^^-------------------------------------------------------
-_f_: meghanada-compile-file      _m_: meghanada-restart
-_c_: meghanada-compile-project   _t_: meghanada-run-task
-_o_: meghanada-optimize-import   _j_: meghanada-run-junit-test-case
-_s_: meghanada-switch-test-case  _J_: meghanada-run-junit-class
-_v_: meghanada-local-variable    _R_: meghanada-run-junit-recent
-_i_: meghanada-import-all        _r_: meghanada-reference
-_g_: magit-status                _T_: meghanada-typeinfo
-_l_: counsel-git
-_q_: exit
-"
-  ("f" meghanada-compile-file)
-  ("m" meghanada-restart)
+  ;; LSP UI tools
+  (use-package lsp-ui
+    :custom
+    ;; lsp-ui-doc
+    (lsp-ui-doc-enable t)
+    (lsp-ui-doc-header t)
+    (lsp-ui-doc-include-signature t)
+    (lsp-ui-doc-position 'top) ; top, bottom, or at-point
+    (lsp-ui-doc-use-childframe t)
+    (lsp-ui-doc-use-webkit t)
+    ;; lsp-ui-flycheck
+    (lsp-ui-flycheck-enable nil)
+    ;; lsp-ui-sideline
+    (lsp-ui-sideline-enable nil)
+    (lsp-ui-sideline-ignore-duplicate t)
+    (lsp-ui-sideline-show-symbol t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-sideline-show-diagnostics nil)
+    (lsp-ui-sideline-show-code-actions nil)
+    ;; lsp-ui-imenu
+    (lsp-ui-imenu-enable nil)
+    (lsp-ui-imenu-kind-position 'top)
+    ;; lsp-ui-peek
+    (lsp-ui-peek-enable t)
+    (lsp-ui-peek-peek-height 20)
+    (lsp-ui-peek-list-width 50)
+    (lsp-ui-peek-fontify 'on-demand) ; never, on-demand, or always
+    :preface
+    (defun demyan/toggle-lsp-ui-doc ()
+      (interactive)
+      (if lsp-ui-doc-mode
+          (progn
+            (lsp-ui-doc-mode -1)
+            (lsp-ui-doc--hide-frame))
+          (lsp-ui-doc-mode 1)))
+    :bind
+    (:map lsp-mode-map
+          ("C-c C-r" . lsp-ui-peek-find-references)
+          ("C-c C-j" . lsp-ui-peek-find-definitions)
+          ("C-c i"   . lsp-ui-peek-find-implementation)
+          ("C-c m"   . lsp-ui-imenu)
+          ("C-c s"   . lsp-ui-sideline-mode)
+          ("C-c d"   . ladicle/toggle-lsp-ui-doc))
+    :hook
+    (lsp-mode . lsp-ui-mode))
+  ;; LSP completion
+  (use-package company-lsp
+    :custom
+    (company-lsp-cache-candidates t)
+    (company-lsp-async t)
+    (company-enable-recompletion nil))
+  ;; LSP ivy
+  (use-package lsp-ivy
+  :ensure t
+  :commands lsp-ivy-workspace-symbol))
+(use-package dap-mode
+  :after lsp-mode
+  :config (dap-auto-configure-mode))
+(use-package lsp-treemacs)
 
-  ("c" meghanada-compile-project)
-  ("o" meghanada-optimize-import)
-  ("s" meghanada-switch-test-case)
-  ("v" meghanada-local-variable)
-  ("i" meghanada-import-all)
+;; (use-package meghanada
+;;   ;; :after google-c-style smartparens rainbow-delimiters highlight-symbol
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (add-hook 'java-mode-hook
+;;             (lambda ()
+;;               (google-set-c-style)
+;;               (google-make-newline-indent)
+;;               (meghanada-mode t)
+;;               (smartparens-mode t)
+;;               (rainbow-delimiters-mode t)
+;;               (highlight-symbol-mode t)
+;;               (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
 
-  ("g" magit-status)
-  ("l" counsel-git)
+;;   :config
+;;   (use-package realgud
+;;     :ensure t)
+;;   (setq indent-tabs-mode nil)
+;;   (setq tab-width 4)
+;;   (setq c-basic-offset 4)
+;;   (setq meghanada-server-remote-debug t)
+;;   (setq meghanada-javac-xlint "-Xlint:all,-processing")
+;;   :bind
+;;   (:map meghanada-mode-map
+;;         ("C-S-t" . meghanada-switch-testcase)
+;;         ("M-RET" . meghanada-local-variable)
+;;         ("C-M-." . counsel-imenu)
+;;         ("M-r" . meghanada-reference)
+;;         ("M-t" . meghanada-typeinfo)
+;;         ("C-z" . hydra-meghanada/body))
+;;   :commands
+;;   (meghanada-mode))
 
-  ("t" meghanada-run-task)
-  ("T" meghanada-typeinfo)
-  ("j" meghanada-run-junit-test-case)
-  ("J" meghanada-run-junit-class)
-  ("R" meghanada-run-junit-recent)
-  ("r" meghanada-reference)
+;; (defhydra hydra-meghanada (:hint nil :exit t)
+;;   "
+;; ^Edit^                           ^Tast or Task^
+;; ^^^^^^-------------------------------------------------------
+;; _f_: meghanada-compile-file      _m_: meghanada-restart
+;; _c_: meghanada-compile-project   _t_: meghanada-run-task
+;; _o_: meghanada-optimize-import   _j_: meghanada-run-junit-test-case
+;; _s_: meghanada-switch-test-case  _J_: meghanada-run-junit-class
+;; _v_: meghanada-local-variable    _R_: meghanada-run-junit-recent
+;; _i_: meghanada-import-all        _r_: meghanada-reference
+;; _g_: magit-status                _T_: meghanada-typeinfo
+;; _l_: counsel-git
+;; _q_: exit
+;; "
+;;   ("f" meghanada-compile-file)
+;;   ("m" meghanada-restart)
 
-  ("q" exit)
-  ("z" nil "leave"))
+;;   ("c" meghanada-compile-project)
+;;   ("o" meghanada-optimize-import)
+;;   ("s" meghanada-switch-test-case)
+;;   ("v" meghanada-local-variable)
+;;   ("i" meghanada-import-all)
+
+;;   ("g" magit-status)
+;;   ("l" counsel-git)
+
+;;   ("t" meghanada-run-task)
+;;   ("T" meghanada-typeinfo)
+;;   ("j" meghanada-run-junit-test-case)
+;;   ("J" meghanada-run-junit-class)
+;;   ("R" meghanada-run-junit-recent)
+;;   ("r" meghanada-reference)
+
+;;   ("q" exit)
+;;   ("z" nil "leave"))
 
 ;; - Groovy/Gradle related
 (use-package groovy-mode
@@ -214,6 +345,7 @@ _q_: exit
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Ivy / Swiper / Counsel related setting
+(define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)
 (ivy-mode 1)
 
 ;; -- Ivy-based interface to statndard commands
@@ -226,6 +358,7 @@ _q_: exit
 ;; --- Counsel settings
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-x b") 'counsel-switch-buffer)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
 (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
 (global-set-key (kbd "<f1> l") 'counsel-find-library)
@@ -320,52 +453,16 @@ _q_: exit
 ;; Flycheck
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; - Frame / Window settings --- Frame >= Window
-(display-time-mode +1)
-(line-number-mode +1)
-(column-number-mode +1)
-;; -- in case, which is most of the time,
-;; -- init.el is loaded first starting daemon process
-(defun new-frame-setup (frame)
-  "Setup for new FRAME."
-  (select-frame frame)
-  (if (display-graphic-p frame)
-      (progn
-        (menu-bar-mode -1)
-        (tool-bar-mode -1)
-        (scroll-bar-mode -1)
-        (set-frame-parameter (selected-frame) 'alpha '(95 75))
-        (set-frame-size (selected-frame) 90 46))))
-;; -- Run for already-existing frames
-(mapc 'new-frame-setup (frame-list))
-;; -- Run when a new frame is created
-(add-hook 'after-make-frame-functions 'new-frame-setup)
-
-;; -- Moving between windows in frame
-(windmove-default-keybindings)
-;; -- Shrink / Enlarge window
-(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-(global-set-key (kbd "S-C-<up>") 'shrink-window)
-(global-set-key (kbd "S-C-<down>") 'enlarge-window)
-
-;; - END_OF Frame / Window settings
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; Theme related
-(unless (package-installed-p 'zenburn-theme)
-  (package-install 'zenburn-theme))
-(unless (package-installed-p 'anti-zenburn-theme)
-  (package-install 'anti-zenburn-theme))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'zenburn t)
-
-;; Mode-Line related : doom-mode-line for now
-(setq doom-modeline-buffer-file-name-style 'truncate-with-project)
-(setq doom-modeline-icon t)
-(setq doom-modeline-major-mode-icon t)
-;;(setq doom-modeline-major-mode-color-icon nil)
+(use-package zenburn-theme
+  :ensure t
+  :config
+  (setq zenburn-use-variable-pitch t)
+  (setq zenburn-scale-org-headlines t)
+  (setq zenburn-scale-outline-headlines t)
+  (load-theme 'zenburn t))
+(use-package anti-zenburn-theme)
 
 ;; Font/Encoding related
 ;; - UTF-8 as default encoding
@@ -412,47 +509,49 @@ _q_: exit
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Java-mode related
-
+(use-package lsp-java
+  :after lsp-deferred)
+(use-package dap-java :ensure nil)
 ;; - END_OF Java related settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; - Python-mode related
-(elpy-enable)
-(autoload 'python-mode "python-mode" "Python Mode." t)
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python" . python-mode))
+;; (elpy-enable)
+;; (autoload 'python-mode "python-mode" "Python Mode." t)
+;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
 ;(use-package py-autopep8
 ;  :ensure t
 ;  :init (progn
 ;          (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
 ;          (setq py-autopep8-options '("--ignore=E401"))))
-(add-hook 'python-mode-hook
-          (lambda ()
-            (define-key python-mode-map (kbd "\C-m") 'newline-and-indent)
-            (define-key python-mode-map (kbd "RET") 'newline-and-indent)
-            (setq indent-tabs-mode nil)
-            (setq tab-width 4)
-            (setq python-indent-offset 4)
-            (setq-local electric-indent-mode nil)
-            (setq electric-indent-chars (delq ?: electric-indent-chars))))
+;; (add-hook 'python-mode-hook
+;;           (lambda ()
+;;             (define-key python-mode-map (kbd "\C-m") 'newline-and-indent)
+;;             (define-key python-mode-map (kbd "RET") 'newline-and-indent)
+;;             (setq indent-tabs-mode nil)
+;;             (setq tab-width 4)
+;;             (setq python-indent-offset 4)
+;;             (setq-local electric-indent-mode nil)
+;;             (setq electric-indent-chars (delq ?: electric-indent-chars))))
 
 ;; -- smart-tabs-mode hooked
 (add-hook 'python-mode-hook 'smart-tabs-mode-enable)
 (smart-tabs-advice python-indent-line-1 python-indent)
 
 ;; -- Jedi setup
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq elpy-rpc-backend "jedi")
-(setq jedi:complete-on-dot t)
-(when (require 'flycheck nil t)
-  (remove-hook 'elpy-modules 'elpy-module-flymake)
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
-(define-key elpy-mode-map (kbd "C-c C-v") 'helm-flycheck)
-(smartrep-define-key elpy-mode-map "C-c"
-                     '(("C-n" . flycheck-next-error)
-                       ("C-p" . flycheck-previous-error)))
+;; (add-hook 'python-mode-hook 'jedi:setup)
+;; (setq elpy-rpc-backend "jedi")
+;; (setq jedi:complete-on-dot t)
+;; (when (require 'flycheck nil t)
+;;   (remove-hook 'elpy-modules 'elpy-module-flymake)
+;;   (add-hook 'elpy-mode-hook 'flycheck-mode))
+;; (define-key elpy-mode-map (kbd "C-c C-v") 'helm-flycheck)
+;; (smartrep-define-key elpy-mode-map "C-c"
+;;                      '(("C-n" . flycheck-next-error)
+;;                        ("C-p" . flycheck-previous-error)))
 
 ;; - END_OF Python related settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -488,53 +587,49 @@ _q_: exit
           '(lambda ()
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
-;; - PostgreSQL related
-(add-hook 'sql-interactive-mode-hook
-          (lambda ()
-            (toggle-truncate-lines t)))
-(sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
-(sql-set-product-feature 'postgres :prompt-cont-regexp "^[-[:alnum:]_]*[-(][#>] ")
-
-(defun psql-connect (product connection)
-  (setq sql-product product)
-  (sql-connect connection))
-
-(setq sql-connection-alist
-      '((psql-nbk-postgres (sql-product 'postgres)
-                           (sql-port 5432)
-                           (sql-server "10.143.96.13")
-                           (sql-user "postgres")
-                           (sql-password "postgres")
-                           (sql-database "postgres"))
-        (psql-nbk-dwhtest (sql-product 'postgres)
-                          (sql-port 5432)
-                          (sql-server "10.143.96.13")
-                          (sql-user "dwhtest")
-                          (sql-password "dwhtest")
-                          (sql-database "postgres"))
-        (psql-nbk-perftest (sql-product 'postgres)
-                           (sql-port 5432)
-                           (sql-server "10.143.96.12")
-                           (sql-user "postgres")
-                           (sql-password "postgres")
-                           (sql-database "postgres"))))
-
-(defun psql-nbk-postgres-connect ()
-  (interactive)
-  (psql-connect 'postgres 'psql-nbk-postgres))
-(defun psql-nbk-dwhtest-connect ()
-  (interactive)
-  (psql-connect 'postgres 'psql-nbk-dwhtest))
-(defun psql-nbk-perftest-connect ()
-  (interactive)
-  (psql-connect 'postgres 'psql-nbk-perftest))
-
 ;; - Shell related
 (if (eq system-type 'windows-nt)
     (progn (setq explicit-shell-file-name "~/../../local/Git/git-bash.exe")
            (setq explicit-bash.exe-args '("--login" "-i"))
            (setq shell-file-name explicit-shell-file-name)
            (setenv "SHELL" shell-file-name)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - Frame / Window settings --- Frame >= Window
+(display-time-mode +1)
+(line-number-mode +1)
+(column-number-mode +1)
+;; -- in case, which is most of the time,
+;; -- init.el is loaded first starting daemon process
+(defun new-frame-setup (frame)
+  "Setup for new FRAME."
+  (select-frame frame)
+  (if (display-graphic-p frame)
+      (progn
+        (menu-bar-mode -1)
+        (tool-bar-mode -1)
+        (scroll-bar-mode -1)
+        (set-frame-parameter (selected-frame) 'alpha '(95 75))
+        (set-frame-size (selected-frame) 90 46))))
+;; -- Run for already-existing frames
+(mapc 'new-frame-setup (frame-list))
+;; -- Run when a new frame is created
+(add-hook 'after-make-frame-functions 'new-frame-setup)
+
+;; -- Moving between windows in frame
+(windmove-default-keybindings)
+;; -- Shrink / Enlarge window
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<up>") 'shrink-window)
+(global-set-key (kbd "S-C-<down>") 'enlarge-window)
+
+;; - END_OF Frame / Window settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Daemon related
+(setq server-socket-dir "~/.emacs.d/server")
+(server-start)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; --- auto-generated lines below ---

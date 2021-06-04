@@ -11,14 +11,13 @@ export CPPFLAGS="-I/usr/local/opt/libffi/include"
 export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 
 # Java related
-export JAVA_08_HOME=$(/usr/libexec/java_home -v1.8)
-export JAVA_11_HOME=$(/usr/libexec/java_home -v11)
-
-alias java8='export JAVA_HOME=$JAVA_08_HOME'
-alias java11='export JAVA_HOME=$JAVA_11_HOME'
-
-# - default to v11
-java11
+jdk() {
+    version=$1
+    export JAVA_HOME=$(/usr/libexec/java_home -v"$version");
+    java -version
+}
+# Set Default Java in v11
+jdk 11
 
 # Enabling color
 autoload colors zsh/terminfo
@@ -31,9 +30,6 @@ RPS1="%{$fg[magenta]%}%20<...<%~%<<%{$reset_color%}"
 
 # Autostart Tmux
 if [ "$TMUX" = "" ]; then tmux; fi
-
-# jEnv initiate
-if which jenv > /dev/null; then eval "$(jenv init -)"; fi
 
 # Auto CD
 setopt auto_cd
@@ -80,6 +76,41 @@ antigen bundle git
 # antigen - apply
 antigen apply
 
+# docker-machine env evaluate
+DOCKER_MACHINE="default"
+if [[ 0 -eq `docker-machine status $DOCKER_MACHINE | grep "Running" | wc -l` ]]
+then
+    docker-machine start $DOCKER_MACHINE && eval "$(docker-machine env $DOCKER_MACHINE)"
+else
+    eval "$(docker-machine env $DOCKER_MACHINE)"
+fi
+
 # Emacs related
-emacs --daemon 2>/dev/null &
-alias ec="emacsclient -nc"
+sec () {
+    emacs --eval "(setq server-name \"$1\")" --daemon 2>/dev/null &
+}
+
+if  [[ 0 -eq `lsof -c emacs | grep unix | grep server | wc -l` ]]
+then
+    sec server01
+fi
+
+ec () {
+    socket_file=$(lsof -c emacs | grep unix | grep server | tr -s " " | cut -d' ' -f8)
+
+    if [[ $socket_file == "" ]]; then        
+        # Just run Emacs (with any arguments passed to the script)
+        # It would be a good idea to parse the arguments and clean/remove
+        # anything emacsclient specific. 
+        # (ie. -e should be --eval for emacs)
+        # note that emacsclient doesn't fix these args for you either
+        # when using -a / --alternate-editor
+
+        sec server01 && emacsclient $@ -nc -s server01
+
+    else
+
+        emacsclient $@ -nc -s $socket_file
+
+    fi
+}

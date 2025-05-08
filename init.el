@@ -573,6 +573,24 @@
 ;; - Org-mode and Plugins related settings
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
+;; -- Mermaid related
+(use-package mermaid-mode
+     :ensure t
+     :config
+     (setq mermaid-mmdc-location mmdc-path))
+(add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
+
+;; (autoload-if-found '(mermaid-mode) "mermaid-mode" nil t)
+
+(use-package mermaid-ts-mode
+  :defer t
+  :straight
+  (:type git
+         :host github-priv
+         :repo "JonathanHope/mermaid-ts-mode"
+         :branch "main"
+         :files ("mermaid-ts-mode.el")))
+
 ;; -- PlantUML related
 (autoload 'plantuml-mode "platuml-mode" "PlantUML mode" t)
 ;; --- path to platuml.jar and options, key-map

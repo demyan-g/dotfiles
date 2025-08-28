@@ -6,6 +6,7 @@ export PATH=$HOMEBREW_PREFIX/opt/texinfo/bin:$PATH
 export PATH=$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH
 export PATH=$HOMEBREW_PREFIX/bin:$PATH
 export PATH=$HOME/.jenv/bin:$PATH
+export PATH=$HOMEBREW_PREFIX/opt/gnu-getopt/bin:$PATH
 
 export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
 
@@ -17,8 +18,15 @@ export LIBRARY_PATH=$HOMEBREW_PREFIX/opt/libgccjit/lib/gcc/current${LIBRARY_PATH
 
 export OLLAMA_MODELS=/Volumes/MureHouse/__ollama-models
 
-# mise related
+# export GST_PLUGIN_PATH=$HOME/.local/lib/gstreamer-1.0
+
+# - Python related
+# -- mise related
 eval "$(/opt/homebrew/bin/mise activate zsh)"
+
+# -- uv related
+# eval "$(uv generate-shell-completion zsh)"
+# eval "$(uvx --generate-shell-completion zsh)"
 
 # Java related
 eval "$(jenv init -)"
@@ -41,6 +49,21 @@ RPS1="%{$fg[magenta]%}%20<...<%~%<<%{$reset_color%}"
 
 # Autostart Tmux
 if [ "$TMUX" = "" ]; then tmux; fi
+
+# For emacs-vterm
+vterm_printf() {
+    if [ -n "$TMUX" ] \
+        && { [ "${TERM%%-*}" = "tmux" ] \
+            || [ "${TERM%%-*}" = "screen" ]; }; then
+        # Tell tmux to pass the escape sequences through
+        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$1"
+    else
+        printf "\e]%s\e\\" "$1"
+    fi
+}
 
 # Auto CD
 setopt auto_cd

@@ -1,22 +1,14 @@
 ;; init.el --- Emacs initial configuration file
 
-;; package --- Summary
-;; Commentary:
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-;; Code:
-
 ;; no backup files
 (setq make-backup-files nil)
 
 ;; native-comp related
 (setenv "LIBRARY_PATH"
         (string-join
-         '("/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/current"
-	   "/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/current/gcc/aarch64-apple-darwin24/14"
-	   "/opt/homebrew/Cellar/libgccjit/14.2.0_1/lib/gcc/current/")
+         '("/opt/homebrew/Cellar/gcc/15.1.0/lib/gcc/current"
+	   "/opt/homebrew/Cellar/gcc/15.1.0/lib/gcc/current/gcc/aarch64-apple-darwin24/15"
+	   "/opt/homebrew/Cellar/libgccjit/15.1.0/lib/gcc/current/")
          ":"))
 (setq comp-speed 3
       comp-deferred-compilation t)
@@ -86,6 +78,20 @@
   :config
   (paradox-enable)
   )
+
+;; straight related to use-package
+;; (defvar bootstrap-version)
+;; (let ((bootstrap-file
+;;        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+;;       (bootstrap-version 5))
+;;   (unless (file-exists-p bootstrap-file)
+;;     (with-current-buffer
+;;         (url-retrieve-synchronously
+;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+;;          'silent 'inhibit-cookies)
+;;       (goto-char (point-max))
+;;       (eval-print-last-sexp)))
+;;   (load bootstrap-file nil 'nomessage))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Dired related
@@ -574,22 +580,23 @@
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
 ;; -- Mermaid related
-(use-package mermaid-mode
-     :ensure t
-     :config
-     (setq mermaid-mmdc-location mmdc-path))
-(add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
+;; (use-package mermaid-mode
+;;      :ensure t
+;;      :config
+;;      (setq mermaid-mmdc-location mmdc-path))
+;; (add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
 
 ;; (autoload-if-found '(mermaid-mode) "mermaid-mode" nil t)
 
-(use-package mermaid-ts-mode
-  :defer t
-  :straight
-  (:type git
-         :host github-priv
-         :repo "JonathanHope/mermaid-ts-mode"
-         :branch "main"
-         :files ("mermaid-ts-mode.el")))
+;; (use-package mermaid-ts-mode
+;;   :defer t
+;;   ;; :ensure
+;;   ;; :straight
+;;   (:type git
+;;          :host github-priv
+;;          :repo "JonathanHope/mermaid-ts-mode"
+;;          :branch "main"
+;;          :files ("mermaid-ts-mode.el")))
 
 ;; -- PlantUML related
 (autoload 'plantuml-mode "platuml-mode" "PlantUML mode" t)
@@ -682,6 +689,8 @@
 (set-clipboard-coding-system 'utf-8)
 
 ;; - Font settings
+;; (mac-auto-ascii-mode 1)
+
 (add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono 12"))
 (set-face-attribute 'default nil :font "BitStream Vera Sans Mono 12")
 (set-fontset-font t 'japanese-jisx0208 (font-spec :family "Meiryo" :size 14))
@@ -913,6 +922,8 @@
            (setq explicit-bash.exe-args '("--login" "-i"))
            (setq shell-file-name explicit-shell-file-name)
            (setenv "SHELL" shell-file-name)))
+(use-package vterm
+  :ensure t)
 
 ;; Daemon related
 ;; (setq server-socket-dir "~/.emacs.d/server")

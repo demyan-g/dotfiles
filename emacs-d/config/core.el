@@ -1,126 +1,142 @@
 ;;; core.el --- Core Emacs settings -*- lexical-binding: t; -*-
 
-;; Author: SeungJun Choi <seungjun.choi@demyan.io>
-;; Version: 0.3
-;; Package-Requires: ((emacs "29.1"))
+;; Copyright (C) 2025 SeungJun Choi
 
 ;;; Commentary:
 
-;; This module contains fundamental Emacs setting sthat affect basic
-;; befavior across all modes and usage patterns.
-;;
-;; Includes:
-;; - File handling (backups, auto-saves, lockfiles)
-;; - Encoding configuration (UTF-8, everywhere)
-;; - Basic editing behavior (tabs, indentation)
-;; - Display settings (time, line numbers)
-;; - Window management keybindings
-;; - Platform-specific configurations (especially macOS)
-;; - Dired enhancements
-;;
-;; These settings form the foundation upon which other modules build.
+;; Fundamental Emacs configuration: encoding, backups, history, editing behavior.
 
 ;;; Code:
 
-;;; File Handling
-;; Configure how Emacs handles file backups and auto-saves
-;; - mostly not creating unnecessary files during editing 
-(setq make-backup-files nil     ; Don't create backup~ files
-      auto-save-default nil     ; Don't create #autosave# files
-      create-lockfiles nil)     ; Don't create .#lock files
-
-;; In case of enabling backups with a centralized location became needed:
-;; (setq backup-directory-alist
-;;       `((".*" . ,(expand-file-name "backups/" user-emacs-directory)))
-;;       auto-save-file-name-transforms
-;;       `((".*" ,(expand-file-name "auto-saves/" user-emacs-directory) t)))
-
-;;; Encoding Configuration
-;; Ensure UTF-8 is used everywhere to prevent encoding issues
-;; Especially important for international users and
-;; when working with files containing non-ASCII characters
-(set-language-environment "UTF-8")
-(set-default-coding-systems 'utf-8)
-(prefer-coding-system 'utf-8-unix)
-(setq default-buffer-file-coding-system 'utf-8)
-(set-buffer-file-coding-system 'utf-8)
+;;; Encoding
+(set-charset-priority 'unicode)
+(prefer-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(set-clipboard-coding-system 'utf8)
+(set-selection-coding-system 'utf-8)
+(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
-;; Treat clipboard input as UTF-8
-(setq x-select-request-type '(UTF_STEING COMPOUND_TEXT TEXT STRING))
+;;; Directories
+(defvar my/cache-dir (expand-file-name ".cache/" user-emacs-directory))
+(unless (file-exists-p my/cache-dir)
+  (make-directory my/cache-dir t))
 
-;;; Preferable Defaults
+;;; Backup and Auto-save
+(setq backup-directory-alist `(("." . ,(expand-file-name "backups/" my/cache-dir))))
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "auto-saves/" my/cache-dir) t)))
+(setq auto-save-list-file-prefix
+      (expand-file-name "auto-saves/sessions/" my/cache-dir))
 
-;; Replace yes/noe prompts with y/n for faster interaction
-(fset 'yes-or-no-p 'y-or-n-p)
+(dolist (dir '("backups" "auto-saves" "auto-saves/sessions"))
+  (let ((path (expand-file-name dir my/cache-dir)))
+    (unless (file-exists-p path) (make-directory path t))))
 
-;; Default indentation settings
-;; Use spaces instead of tabs for consistency across environments
-(setq-default tab-width 4               ; Display tabs as 4 spaces
-              indent-tabs-mode nil)     ; Use spaces for indentation
+(setq make-backup-files t
+      backup-by-copying t
+      version-control t
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      vc-make-backup-files t)
 
-;; Enable useful minor modes
-(global-auto-revert-mode 1)             ; Auto-refresh buffers when files change
-(delete-selection-mode 1)               ; Replace selection when typing
-(save-place-mode 1)                     ; Remember cursor position in files
-(recentf-mode 1)                        ; Track recently opened files
+;;; History
+(use-package savehist
+  :ensure nil
+  :init (savehist-mode)
+  :config
+  (setq savehist-additional-variables
+        '(search-ring regexp-search-ring kill-ring))
+  (setq savehist-file (expand-file-name "savehist" my/cache-dir)))
 
-;; Increase the number of recent files tracked
-(setq recentf-max-menu-items 25
-      recentf-max-saved-items 100)
+(use-package recentf
+  :ensure nil
+  :init (recentf-mode)
+  :config
+  (setq recentf-max-saved-items 200
+        recentf-max-menu-items 15
+        recentf-auto-cleanup 'never)
+  (setq recentf-exclude
+        '("/tmp/" "/ssh:" "/sudo:" "\\.git/" "COMMIT_EDITMSG"
+          "\\.emacs\\.d/elpa/" "\\.emacs\\.d/elpaca/"
+          "recentf" ".*-autoloads\\.el\\'")))
 
-;;; Display Settings
-;; Configure how information is displayed in the mode line and buffer
+(use-package saveplace
+  :ensure nil
+  :init (save-place-mode)
+  :config
+  (setq save-place-file (expand-file-name "places" my/cache-dir)))
 
-(display-time-mode +1)                  ; Show time in mode line
-(line-number-mode +1)                   ; Show line number in mode line
-(column-number-mode +1)                 ; Show column number in mode line
-(setq display-time-24hr-format t        ; Use 24-hour time format
-      diaplay-time-default-load-average nil) ; Don't show load average
+;;; Scrolling
+(setq scroll-margin 3
+      scroll-conservatively 101
+      scroll-preserve-screen-position t
+      auto-window-vscroll nil)
 
-;; Show line numbers in programming modes
-;; - display-line-numbers is faster than the older linum-mode
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 1))
+      mouse-wheel-progressive-speed nil
+      mouse-wheel-follow-mouse t)
+
+;; Pixel scrolling (Emacs 29+)
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
+
+;;; Indentation
+(setq-default indent-tabs-mode nil
+              tab-width 4)
+(setq-default fill-column 80)
+
+;;; Editing Behavior
+(delete-selection-mode 1)
+(show-paren-mode 1)
+(setq show-paren-delay 0
+      show-paren-style 'parenthesis)
+
+;; Enable useful commands
+(put 'narrow-to-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)
+
+;; Better defaults
+(setq ring-bell-function 'ignore
+      use-short-answers t
+      confirm-kill-emacs 'y-or-n-p
+      require-final-newline t
+      sentence-end-double-space nil)
+
+;;; Line Numbers
+(setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-hook 'text-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
-;; Window Management
-;; Enhanced window navigation using Shift + Arrow keys
-;; This is more intuitive than the default C-x o cycling
+;;; Highlight Current Line
+(global-hl-line-mode 1)
 
-(windmove-default-keybindings)          ; Navigate windows with Shift+arrows
+;;; Custom File
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
-;; Windows resizing keybindings
-;; These allow quick window size adjustments without M-x commands
-(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-(global-set-key (kbd "S-C-<up>") 'shrink-window)
-(global-set-key (kbd "S-C-<down>") 'enlarge-window)
+;;; Global Keybindings
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
 
-;; Quick window splitting
-(global-set-key (kbd "C-x |") 'split-window-horizontally)
-(global-set-key (kbd "C-x -") 'split-window-vertically)
+;; Window navigation
+(windmove-default-keybindings)
 
-;;; Scrolling Behavior
-;; Make scrolling smoother and more predictable
-(setq scroll-margin 3                   ; Start scrolling 3 lines before edge
-      scroll-conservatively 101         ; Scroll one line at a time
-      scroll-preserve-screen-position t ; Keep point position when scrolling
-      mouse-wheel-progressive-speed nil ; Don't accelerate mouse scrolling
-      mouse-wheel-scroll-amount '(3))   ; Scroll 3 lines with mouse wheel
+;;; which-key (built-in Emacs 30+, package for earlier)
+(use-package which-key
+  :ensure t
+  :init (which-key-mode)
+  :config
+  (setq which-key-idle-delay 0.5
+        which-key-idle-secondary-delay 0.1
+        which-key-sort-order 'which-key-key-order-alpha))
 
-;;; macOS Specific Configuration
-(when (eq system-type 'darwin)
-  ;; Configure modifier keys for macOS
-  ;; This matches common macOS application behavior
-  (setq mac-option-modifier 'meta       ; Option key is Meta
-        mac-command-modifier 'super     ; Command key is Super
-        ;; mac-right-option-modifier nil   ; Right Option for accented charactoers
-        )
-
-  ;; Enable native fullscreen mode
-  (setq ns-use-native-fullscreen t)
-
-  
-  )
+(provide 'core)
+;;; core.el ends here

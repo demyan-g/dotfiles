@@ -1,12 +1,16 @@
 # PATH related
+export HOMEBREW_PREFIX=`brew --prefix`
 export LOCAL=$HOME/local
 export GO_TOOLS=$HOME/go/bin
-export PATH=/usr/local/bin:/usr/local/sbin:$GO_TOOLS:$HOMEBREW_PREFIX/opt/gnu-getopt/bin:$PATH
+
+export PATH=/usr/local/bin:/usr/local/sbin:$GO_TOOLS:$PATH
 export PATH=$HOMEBREW_PREFIX/opt/texinfo/bin:$PATH
 export PATH=$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH
 export PATH=$HOMEBREW_PREFIX/bin:$PATH
 export PATH=$HOME/.jenv/bin:$PATH
 export PATH=$HOMEBREW_PREFIX/opt/gnu-getopt/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOMEBREW_PREFIX/sbin:$PATH
 
 export DYLD_LIBRARY_PATH=/usr/local/cuda/lib:$DYLD_LIBRARY_PATH
 

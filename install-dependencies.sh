@@ -43,7 +43,6 @@ echo ""
 
 echo "Installing Nerd Fonts (Symbols only)..."
 if [[ "$OS" == "macos" ]]; then
-    brew tap homebrew/cask-fonts
     brew install --cask font-symbols-only-nerd-font
     brew install --cask font-sarasa-gothic
 else
@@ -87,7 +86,7 @@ echo "Installing ruff..."
 uv tool install ruff || pip install ruff
 
 echo "Installing debugpy..."
-pip install debugpy --break-system-packages 2>/dev/null || pip install debugpy
+uv tool install --refresh-package debugpy debugpy 2>/dev/null || pip install debugpy
 
 echo ""
 
@@ -136,6 +135,9 @@ echo ""
 # ===========================================
 echo "=== TypeScript/JavaScript Tools ==="
 
+echo "PNPM setup"
+pnpm setup
+ 
 echo "Installing TypeScript language server..."
 pnpm add -g typescript typescript-language-server
 

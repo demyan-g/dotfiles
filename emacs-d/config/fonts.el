@@ -17,8 +17,8 @@
 ;;; Code:
 
 ;;; Font Variables
-(defvar my/font-size 140
-  "Default font size in 1/10 pt (140 = 14pt).")
+(defvar my/font-size 130
+  "Default font size in 1/10 pt (130 = 13pt).")
 
 (defvar my/font-family "Sarasa Mono SC"
   "Primary monospace font for ASCII and default.")

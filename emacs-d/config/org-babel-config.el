@@ -69,8 +69,8 @@
     "Configure ob-python to use uv environment."
     (interactive)
     (let ((venv-python (expand-file-name ".venv/bin/python"
-                                          (or (projectile-project-root)
-                                              default-directory))))
+                                         (or (projectile-project-root)
+                                             default-directory))))
       (when (file-exists-p venv-python)
         (setq-local org-babel-python-command venv-python)
         (message "Using Python: %s" venv-python)))))
@@ -133,12 +133,20 @@
           (:dir . "."))))
 
 ;;; Scala Configuration (via Ammonite)
+(use-package ammonite-term-repl
+  :ensure (:host github :repo "suzzvv/ammonite-term-repl")
+  :config
+  (add-hook 'scala-mode-hook
+            (lambda ()
+              (ammonite-term-repl-minor-mode t))))
+
 (use-package ob-ammonite
-  :ensure t
-  :after org
+  :ensure (:host github :repo "suzzvv/ob-ammonite")
+  :after org ammonite-term-repl
   :config
   (setq org-babel-default-header-args:ammonite
-        '((:results . "output"))))
+        '((:results . "output"))
+        ob-ammonite-prompt-str "scala>"))
 
 ;;; SQL Configuration
 (with-eval-after-load 'ob-sql

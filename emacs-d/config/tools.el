@@ -169,24 +169,17 @@
            ("C-c p b" . consult-projectile-switch-to-buffer)
            ("C-c p r" . consult-projectile-recentf))))
 
-;;; EditorConfig Support
-(use-package editorconfig
-  :ensure t
-  :config
-  (editorconfig-mode 1)
-  (setq editorconfig-mode-lighter " EC"))
-
 ;;; File Format Support
 (use-package yaml-mode
   :ensure t
-  :mode "\\.ya?ml\\'" . yaml-mode
+  :mode ("\\.ya?ml\\'" . yaml-mode)
   :hook ((yaml-mode . display-line-numbers-mode))
   :config
   (setq yaml-indent-offset 2))
 
 (use-package json-mode
   :ensure t
-  :mode "\\.jsonl?\\'" . json-mode
+  :mode ("\\.jsonl?\\'" . json-mode)
   :hook (json-mode . (lambda ()
                        (make-local-variable 'js-indent-level)
                        (setq js-indent-level 2))))
@@ -254,6 +247,30 @@
   :after dired
   :bind (:map dired-mode-map
               ("TAB" . dired-subtree-toggle)))
+
+;;; Apple Music.app control
+(defun my/apple-music-command (command)
+  "Send a command to Apple Music asynchronously."
+  (start-process "apple-music-cmd" nil
+                 "osascript" "-e"
+                 (format "tell application \"Music\" to %s" command)))
+
+(defun my/music-play-pause ()
+  (interactive)
+  (my/apple-music-command "playpause"))
+
+(defun my/music-next ()
+  (interactive)
+  (my/apple-music-command "next track"))
+
+(defun my/music-prev ()
+  (interactive)
+  (my/apple-music-command "previous track"))
+
+;; Optional: Bind to keys (e.g., Hyper-m or a leader key)
+;; (global-set-key (kbd "M-m p") 'my/music-play-pause)
+;; (global-set-key (kbd "M-m n") 'my/music-next)
+;; (global-set-key (kbd "M-m b") 'my/music-prev)
 
 (provide 'tools)
 ;;; tools.el ends here

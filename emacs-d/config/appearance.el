@@ -39,7 +39,7 @@
   ;; Finally, load your theme of choice (or a random one with
   ;; `modus-themes-load-random', `modus-themes-load-random-dark',
   ;; `modus-themes-load-random-light').
-  (modus-themes-load-theme 'ef-summer))
+  (modus-themes-load-theme 'ef-owl))
 
 ;; Zenburn theme
 ;; (use-package zenburn-theme
@@ -96,7 +96,7 @@
   :init (doom-modeline-mode 1)
   :custom
   ;; Dimensions
-  (doom-modeline-height 28)
+  (doom-modeline-height 25)
   (doom-modeline-bar-width 4)
   (doom-modeline-window-width-limit 85)
   
@@ -111,17 +111,19 @@
   (doom-modeline-buffer-file-name-style 'truncate-upto-project)
   
   ;; What to display
-  (doom-modeline-minor-modes t)      ; Show minor modes via minions
+  (doom-modeline-column-zero-based nil)     ; Show 1-based column (more intuitive)
+  ;; (doom-modeline-total-line-number t)       ; Show total lines like "42/500"
+  (doom-modeline-minor-modes t)             ; Show minor modes via minions
   (doom-modeline-enable-word-count nil)
-  (doom-modeline-buffer-encoding t)  ; Show encoding
+  (doom-modeline-buffer-encoding t)         ; Show encoding
   (doom-modeline-indent-info nil)
   (doom-modeline-checker-simple-format t)
   (doom-modeline-vcs-max-length 20)
   (doom-modeline-env-version t)
-  (doom-modeline-lsp t)              ; Show LSP status
+  (doom-modeline-lsp t)                     ; Show LSP status
   (doom-modeline-modal-icon t)
-  (doom-modeline-time t)             ; Show time
-  (doom-modeline-battery t)          ; Show battery (if applicable)
+  (doom-modeline-time t)                    ; Show time
+  (doom-modeline-battery t)                 ; Show battery (if applicable)
   
   ;; Segment visibility
   (doom-modeline-github nil)
@@ -129,6 +131,8 @@
   (doom-modeline-gnus nil)
   (doom-modeline-irc nil)
   (doom-modeline-persp-name nil))
+(setq doom-modeline-position-line-format '("L%l/%L")) ; Displays "L<current_line>/<total_lines>"
+(setq doom-modeline-position-column-format '("C%c"))  ; Displays "C<current_column>"
 
 ;; Display time in modeline
 (setq display-time-format "%H:%M")
@@ -177,7 +181,7 @@
     "Pulse the current line."
     (pulse-momentary-highlight-one-line (point)))
   (dolist (cmd '(scroll-up-command scroll-down-command
-                 recenter-top-bottom other-window))
+                                   recenter-top-bottom other-window))
     (advice-add cmd :after #'my/pulse-line)))
 
 ;;; Window Management

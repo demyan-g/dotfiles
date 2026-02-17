@@ -111,6 +111,7 @@
   (when (executable-find "rg")
     (setq consult-ripgrep-args
           "rg --null --line-buffered --color=never --max-columns=1000 --path-separator / --smart-case --no-heading --with-filename --line-number --search-zip")))
+(global-set-key (kbd "C-S-s") 'consult-line-multi)  ;; Search across all buffers
 
 ;;; Embark - Context Actions
 (use-package embark

@@ -17,6 +17,44 @@
 (set-selection-coding-system 'utf-8)
 (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
+;;; PATH from Shell (macOS / GUI Emacs)
+;; GUI Emacs on macOS doesn't inherit shell PATH, causing tools like
+;; rg, fd, node, rust-analyzer, etc. to not be found.
+(use-package exec-path-from-shell
+  :ensure t
+  :if (or (memq window-system '(mac ns x))
+          (daemonp))
+  :config
+  ;; Copy these environment variables from shell
+  (dolist (var '("PATH"
+                 "MANPATH"
+                 "LIBRARY_PATH"        ;; For native-comp on macOS
+                 "SSH_AUTH_SOCK"       ;; For Magit SSH
+                 "SSH_AGENT_PID"
+                 "GPG_AGENT_INFO"      ;; For GPG signing
+                 "LANG"
+                 "LC_ALL"
+                 "GOPATH"              ;; Go
+                 "CARGO_HOME"          ;; Rust
+                 "RUSTUP_HOME"
+                 "NVM_DIR"             ;; Node version manager
+                 "PNPM_HOME"           ;; pnpm
+                 "PYENV_ROOT"          ;; Python
+                 "UV_TOOL_BIN_DIR"))   ;; uv tools
+    (add-to-list 'exec-path-from-shell-variables var))
+  
+  ;; Use non-interactive shell for speed (zsh -l instead of zsh -i -l)
+  (setq exec-path-from-shell-arguments '("-l"))
+  
+  ;; Warn if shell startup is slow
+  (setq exec-path-from-shell-warn-duration-millis 500)
+  
+  ;; Initialize
+  (exec-path-from-shell-initialize)
+  (add-to-list 'exec-path "/Users/demyan/.local/bin"))
+
+
+
 ;;; Directories
 (defvar my/cache-dir (expand-file-name ".cache/" user-emacs-directory))
 (unless (file-exists-p my/cache-dir)
@@ -107,10 +145,14 @@
       sentence-end-double-space nil)
 
 ;;; Line Numbers
-(setq display-line-numbers-type 'relative)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(add-hook 'text-mode-hook #'display-line-numbers-mode)
-(add-hook 'conf-mode-hook #'display-line-numbers-mode)
+;; (setq display-line-numbers-type 'relative)
+;; (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+;; (add-hook 'text-mode-hook #'display-line-numbers-mode)
+;; (add-hook 'conf-mode-hook #'display-line-numbers-mode)
+
+;; Show line and column numbers in modeline
+(line-number-mode 1)
+(column-number-mode 1)
 
 ;;; Highlight Current Line
 (global-hl-line-mode 1)
@@ -123,8 +165,10 @@
 ;;; Global Keybindings
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+;; (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+;; (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-s") 'consult-line)
+(global-set-key (kbd "C-r") 'consult-line)
 
 ;; Window navigation
 (windmove-default-keybindings)

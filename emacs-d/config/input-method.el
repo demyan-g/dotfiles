@@ -21,66 +21,71 @@
 ;;; Code:
 
 ;;; sis - Smart Input Source
-(use-package sis
-  :ensure t
-  :config
-  ;; Platform-specific configuration
-  (cond
-   ;; macOS configuration
-   ((eq system-type 'darwin)
-    ;; Install macism: brew tap laishulu/homebrew && brew install macism
-    (sis-ism-lazyman-config
-     ;; English input source
-     "com.apple.keylayout.ABC"
-     ;; Korean input source (change to your preferred)
-     "com.apple.inputmethod.Korean.2SetKorean"
-     ;; Or Japanese: "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese"
-     ))
-   
-   ;; Linux with fcitx5
-   ((and (eq system-type 'gnu/linux)
-         (executable-find "fcitx5-remote"))
-    (sis-ism-lazyman-config "1" "2" 'fcitx5))
-   
-   ;; Linux with fcitx
-   ((and (eq system-type 'gnu/linux)
-         (executable-find "fcitx-remote"))
-    (sis-ism-lazyman-config "1" "2" 'fcitx))
-   
-   ;; Linux with ibus
-   ((and (eq system-type 'gnu/linux)
-         (executable-find "ibus"))
-    (sis-ism-lazyman-config
-     "xkb:us::eng"
-     "hangul"  ;; Or "anthy" for Japanese
-     'ibus))
-   
-   ;; Windows (Emacs 28+)
-   ((eq system-type 'windows-nt)
-    (sis-ism-lazyman-config nil t 'w32)))
-  
-  ;; Enable global modes
-  (sis-global-cursor-color-mode t)   ;; Change cursor color based on IM state
-  (sis-global-respect-mode t)        ;; Protect prefix keys from IM interception
-  (sis-global-context-mode t)        ;; Smart switching based on context
-  
-  ;; Prefix keys to protect (switch to English when these are pressed)
-  (setq sis-prefix-override-keys '("C-c" "C-x" "C-h" "C-u" "C-g" "M-x"))
-  
-  ;; Cursor color configuration
-  (setq sis-default-cursor-color "#51cf66")  ;; Green for English
-  (setq sis-other-cursor-color "#ff6b6b")    ;; Red for CJK
-  
-  ;; Context-based switching rules
-  (setq sis-context-hooks
-        '(;; Switch to English in minibuffer
-          (minibuffer-setup . sis-context-hook)
-          ;; Switch to English when entering command
-          (isearch-mode . sis-context-hook)))
-  
-  ;; Inline region auto-switch (for mixed language text)
-  (setq sis-inline-tighten-head-rule 1)
-  (setq sis-inline-tighten-tail-rule 1))
+;; (use-package sis
+;;   :ensure t
+;;   :config
+;;   ;; Platform-specific configuration
+;;   (cond
+;;    ;; macOS configuration
+;;    ((eq system-type 'darwin)
+;;     ;; IMPORTANT: Set the external tool path explicitly
+;;     ;; Install macism: brew tap laishulu/homebrew && brew install macism
+;;     (setq sis-ism-external-command "macism")
+
+;;     ;; Configure with YOUR actual input source identifiers from `macism -l`
+;;     (sis-ism-lazyman-config
+;;      ;; English input source
+;;      "com.apple.keylayout.ABC"
+;;      ;; Korean input source (change to your preferred)
+;;      "com.apple.inputmethod.Korean.2SetKorean"
+;;      ;; Or Japanese: "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese"
+;;      ;; "com.google.inputmethod.Japanese.base"
+;;      ))
+
+;;    ;; Linux with fcitx5
+;;    ((and (eq system-type 'gnu/linux)
+;;          (executable-find "fcitx5-remote"))
+;;     (sis-ism-lazyman-config "1" "2" 'fcitx5))
+
+;;    ;; Linux with fcitx
+;;    ((and (eq system-type 'gnu/linux)
+;;          (executable-find "fcitx-remote"))
+;;     (sis-ism-lazyman-config "1" "2" 'fcitx))
+
+;;    ;; Linux with ibus
+;;    ((and (eq system-type 'gnu/linux)
+;;          (executable-find "ibus"))
+;;     (sis-ism-lazyman-config
+;;      "xkb:us::eng"
+;;      "hangul"  ;; Or "anthy" for Japanese
+;;      'ibus))
+
+;;    ;; Windows (Emacs 28+)
+;;    ((eq system-type 'windows-nt)
+;;     (sis-ism-lazyman-config nil t 'w32)))
+
+;;   ;; Enable global modes
+;;   (sis-global-cursor-color-mode t)   ;; Change cursor color based on IM state
+;;   (sis-global-respect-mode t)        ;; Protect prefix keys from IM interception
+;;   (sis-global-context-mode t)        ;; Smart switching based on context
+
+;;   ;; Prefix keys to protect (switch to English when these are pressed)
+;;   (setq sis-prefix-override-keys '("C-c" "C-x" "C-h" "C-u" "C-g" "M-x" "C-s"))
+
+;;   ;; Cursor color configuration
+;;   (setq sis-default-cursor-color nil)  ;; Green for English
+;;   (setq sis-other-cursor-color "#ff6b6b")    ;; Red for CJK
+
+;;   ;; Context-based switching rules
+;;   (setq sis-context-hooks
+;;         '(;; Switch to English in minibuffer
+;;           (minibuffer-setup . sis-context-hook)
+;;           ;; Switch to English when entering command
+;;           (isearch-mode . sis-context-hook)))
+
+;;   ;; Inline region auto-switch (for mixed language text)
+;;   (setq sis-inline-tighten-head-rule 1)
+;;   (setq sis-inline-tighten-tail-rule 1))
 
 ;;; Alternative: Emacs-native Input Methods
 ;; If you prefer to avoid external IM dependencies, you can use
@@ -120,31 +125,31 @@
       (deactivate-input-method)
     (activate-input-method default-input-method)))
 
-(defun my/switch-to-english ()
-  "Switch to English input method."
-  (interactive)
-  (sis-set-english))
+;; (defun my/switch-to-english ()
+;;   "Switch to English input method."
+;;   (interactive)
+;;   (sis-set-english))
 
-(defun my/switch-to-other ()
-  "Switch to other (CJK) input method."
-  (interactive)
-  (sis-set-other))
+;; (defun my/switch-to-other ()
+;;   "Switch to other (CJK) input method."
+;;   (interactive)
+;;   (sis-set-other))
 
-(defun my/sis-status ()
-  "Display current input source status."
-  (interactive)
-  (message "Input source: %s" (sis-get)))
+;; (defun my/sis-status ()
+;;   "Display current input source status."
+;;   (interactive)
+;;   (message "Input source: %s" (sis-get)))
 
 ;;; Keybindings
 (global-set-key (kbd "C-\\") #'my/toggle-input-method)
 (global-set-key (kbd "C-c I e") #'my/switch-to-english)
 (global-set-key (kbd "C-c I o") #'my/switch-to-other)
-(global-set-key (kbd "C-c I s") #'my/sis-status)
+;; (global-set-key (kbd "C-c I s") #'my/sis-status)
 
 ;;; Mode-specific Input Method Settings
 ;; Automatically switch to English in certain modes
-(add-hook 'prog-mode-hook #'sis-set-english)
-(add-hook 'minibuffer-setup-hook #'sis-set-english)
+;; (add-hook 'prog-mode-hook #'sis-set-english)
+;; (add-hook 'minibuffer-setup-hook #'sis-set-english)
 
 ;; Keep current IM in text modes
 ;; (add-hook 'text-mode-hook #'sis-context-mode)

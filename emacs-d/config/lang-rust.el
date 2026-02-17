@@ -25,9 +25,8 @@
 ;; NOTE: Use the maintained fork at emacs-rustic/rustic
 ;; The original brotzeit/rustic is unmaintained as of May 2024.
 (use-package rustic
-  ;; :ensure t
   ;; For elpaca, use the maintained fork:
-  :elpaca (:host github :repo "emacs-rustic/rustic")
+  :ensure (:host github :repo "emacs-rustic/rustic")
   :mode ("\\.rs\\'" . rustic-mode)
   :hook ((rustic-mode . lsp-deferred)
          (rustic-mode . (lambda ()

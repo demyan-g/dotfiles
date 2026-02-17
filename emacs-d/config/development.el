@@ -90,7 +90,16 @@
           (toml "https://github.com/tree-sitter/tree-sitter-toml")
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
           (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-          (yaml "https://github.com/tree-sitter/tree-sitter-yaml")))
+          (yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml")
+          (scala "https://github.com/tree-sitter/tree-sitter-scala")
+          (markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown")
+          (ssh-config "https://github.com/tree-sitter-grammars/tree-sitter-ssh-config")
+          (xml "https://github.com/tree-sitter-grammars/tree-sitter-xml")
+          (scss "https://github.com/tree-sitter-grammars/tree-sitter-scss")
+          (py-requirements "https://github.com/tree-sitter-grammars/tree-sitter-requirements")
+          (vue "https://github.com/tree-sitter-grammars/tree-sitter-vue")
+          (make "https://github.com/tree-sitter-grammars/tree-sitter-make")
+          (zsh "https://github.com/tree-sitter-grammars/tree-sitter-zsh")))
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
@@ -104,7 +113,8 @@
 (use-package editorconfig
   :ensure t
   :config
-  (editorconfig-mode 1))
+  (editorconfig-mode 1)
+  (setq editorconfig-mode-lighter " EC"))
 
 ;;; Diff-hl - Git gutter
 (use-package diff-hl

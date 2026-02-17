@@ -52,12 +52,17 @@
     (require 'elpaca)
     (elpaca-generate-autoloads "elpaca" repo)
     (load "./elpaca-autoloads")))
-(add-hook 'after-init-hook #'elpaca-process-queues)
+;; (add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
 ;;; use-package Integration
 (elpaca elpaca-use-package
   (elpaca-use-package-mode))
+(elpaca-wait)
+
+;; Install transient early (required by magit, gptel, etc.)
+(elpaca transient)
 (elpaca-wait)
 
 ;;; Load Configuration Modules
@@ -67,16 +72,29 @@
 
 ;; Core functionality
 (load-config "core")
-(load-config "appearance")
 (load-config "fonts")
+
+;; UI packages - load and wait
+(load-config "appearance")
 (load-config "completion")
+(elpaca-wait)  ;; Wait for UI packages to install
+
+;; External tools
+(load-config "tools")
+(elpaca-wait)  ;; Wait for tools (magit, projectile, etc.)
+
+;; Music playing related
+(load-config "musica")
+(elpaca-wait) ;; Wait for musica
+
+;; Development tools
+(load-config "development")
+(load-config "lsp-config")
+(elpaca-wait)  ;; Wait for dev packages
 
 ;; AI integration
 (load-config "intelligence")
-
-;; Development environment
-(load-config "development")
-(load-config "lsp-config")
+(elpaca-wait)
 
 ;; Language-specific configurations
 (load-config "lang-java")
@@ -85,9 +103,7 @@
 (load-config "lang-rust")
 (load-config "lang-c")
 (load-config "lang-web")
-
-;; External tools
-(load-config "tools")
+(elpaca-wait)  ;; Wait for language packages
 
 ;; Org-mode ecosystem
 (load-config "org-config")
@@ -95,9 +111,15 @@
 (load-config "org-babel-config")
 (load-config "org-export-config")
 (load-config "org-gtd")
+(elpaca-wait)  ;; Wait for org packages
 
 ;; CJK input method support
 (load-config "input-method")
+(elpaca-wait)  ;; Wait for input-method conf
+
+;; Startup page
+(load-config "startup")
+(elpaca-wait)  ;; Final wait
 
 ;;; Post-Initialization
 (add-hook 'emacs-startup-hook
@@ -105,7 +127,7 @@
             ;; Reset GC threshold to reasonable value
             (setq gc-cons-threshold (* 16 1024 1024))
             ;; Display startup time
-            (message "Emacs loaded in %.2f seconds with %d garbage collections."
+            (message "Emacs loaded in %.3f seconds with %d garbage collections."
                      (float-time (time-subtract after-init-time before-init-time))
                      gcs-done)))
 

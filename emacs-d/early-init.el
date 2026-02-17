@@ -24,7 +24,9 @@
   (setenv "LIBRARY_PATH"
           (string-join
            '("/opt/homebrew/opt/gcc/lib/gcc/current"
-             "/opt/homebrew/opt/libgccjit/lib/gcc/current")
+             "/opt/homebrew/opt/libgccjit/lib/gcc/current"
+             "/opt/homebrew/opt/gcc/lib/gcc/current/gcc/aarch64-apple-darwin25/15"
+             "/opt/homebrew/opt/gcc/lib")
            ":")))
 
 ;;; UI Optimizations (before GUI loads)
@@ -61,8 +63,8 @@
 ;;; Frame Configuration
 (setq default-frame-alist
       (append default-frame-alist
-              '((width . 140)
-                (height . 50)
+              '((width . 105)
+                (height . 75)
                 (left . 50)
                 (top . 50))))
 

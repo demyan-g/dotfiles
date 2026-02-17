@@ -44,22 +44,18 @@
                   (javascript "https://github.com/tree-sitter/tree-sitter-javascript")))))
 
 ;;; LSP Configuration
-(use-package lsp-mode
-  :ensure t
-  :hook ((typescript-ts-mode . lsp-deferred)
-         (tsx-ts-mode . lsp-deferred)
-         (js-ts-mode . lsp-deferred)
-         (js-mode . lsp-deferred))
-  :custom
-  (lsp-typescript-suggest-complete-function-calls t)
-  (lsp-typescript-format-enable nil)
-  (lsp-javascript-format-enable nil)
-  (lsp-typescript-inlay-hints-parameter-names-enabled "all")
-  (lsp-typescript-inlay-hints-parameter-types-enabled t)
-  (lsp-typescript-inlay-hints-variable-types-enabled t)
-  :config
-  (unless (executable-find "typescript-language-server")
-    (message "Warning: typescript-language-server not found. Install with: pnpm add -g typescript typescript-language-server")))
+(with-eval-after-load 'lsp-mode
+  (setq lsp-typescript-suggest-complete-function-calls t
+        lsp-typescript-format-enable nil
+        lsp-javascript-format-enable nil
+        lsp-typescript-inlay-hints-parameter-names-enabled "all"
+        lsp-typescript-inlay-hints-parameter-types-enabled t
+        lsp-typescript-inlay-hints-variable-types-enabled t))
+
+(add-hook 'typescript-ts-mode-hook #'lsp-deferred)
+(add-hook 'tsx-ts-mode-hook #'lsp-deferred)
+(add-hook 'js-ts-mode-hook #'lsp-deferred)
+(add-hook 'js-mode-hook #'lsp-deferred)
 
 ;;; Prettier Integration
 (with-eval-after-load 'apheleia

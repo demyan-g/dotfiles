@@ -1,1 +1,0 @@
-/Users/seungjun.choi/dotfiles/init.el

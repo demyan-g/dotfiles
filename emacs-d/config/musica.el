@@ -56,7 +56,8 @@ Generates index using pytunes and ffprobe."
                         (require 'seq)
                         (require 'map)
 
-                        (add-to-list 'exec-path "/Users/demyan/.local/bin")
+
+                        (add-to-list 'exec-path (expand-file-name ".local/bin" (getenv "HOME")))
                         (setq pytunes-path (executable-find "pytunes"))
                         
                         (message "Generating Tracks.sqlite...")

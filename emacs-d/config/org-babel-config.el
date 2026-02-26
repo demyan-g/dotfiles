@@ -37,8 +37,8 @@
   ;; Security: Selective confirmation
   (defun my/org-confirm-babel-evaluate (lang body)
     "Confirm evaluation for unsafe languages."
-    (not (member lang '("emacs-lisp" "python" "shell" "C" "C++" "js"
-                        "sql" "sqlite" "latex" "plantuml" "dot" "calc"))))
+    (not (member lang '("emacs-lisp" "python" "C" "C++" "js"
+                        "sqlite" "latex" "plantuml" "dot" "calc"))))
   (setq org-confirm-babel-evaluate 'my/org-confirm-babel-evaluate)
   
   ;; Display images after execution

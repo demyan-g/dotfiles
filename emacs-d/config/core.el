@@ -51,9 +51,7 @@
   
   ;; Initialize
   (exec-path-from-shell-initialize)
-  (add-to-list 'exec-path "/Users/demyan/.local/bin"))
-
-
+  (add-to-list 'exec-path (expand-file-name ".local/bin" (getenv "HOME"))))
 
 ;;; Directories
 (defvar my/cache-dir (expand-file-name ".cache/" user-emacs-directory))

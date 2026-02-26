@@ -4,20 +4,7 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 # - Installing basics
-brew install \
-     zsh tmux neovim python3 ag reattach-to-user-namespace \
-     autoconf awscli brew-cask-completion coreutils \
-     docker docker-machine ffmpeg flac ghostscript \
-     git github gnu-sed gnutls gzip htop imagemagick jpeg \
-     jq mu msmtp neofetch parallel \
-     snappy texinfo tree unzip zip zsh-autosuggestions \
-     zsh-completions zsh-git-prompt zsh-history-substring-search \
-     zsh-syntax-highlighting zstd
-brew install --cask \
-     cyberduck discord google-chrome google-japanese-ime \
-     iterm2 microsoft-office microsoft-teams plex-media-server \
-     slack spotify spotify-now-playing tunnelblick virtualbox \
-     visual-studio-code vlc zoom
+brew bundle
 
 chmod go-w '/usr/local/share'
 

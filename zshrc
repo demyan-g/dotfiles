@@ -329,6 +329,7 @@ alias zjl='zellij list-sessions'
 # Start Emacs daemon with custom server name
 sec() {
     local name="${1:-server}"
+    [[ "$name" =~ ^[a-zA-Z0-9_-]+$ ]] || { echo "Invalid server name"; return 1; }
     emacs --eval "(setq server-name \"$name\")" --daemon 2>/dev/null &
 }
 

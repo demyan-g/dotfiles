@@ -1,7 +1,57 @@
-# Generally
+# Emacs
 *.*~
+\#*\#
+*.elc
+auto-save-list/
+custom.el
+.emacs.desktop
+.emacs.desktop.lock
+eshell/history
+eshell/lastdir
+tramp
+url/cookies
 
-# Emacs related
+# macOS
 .DS_Store
-*/**/.DS_Store
-*/**/.emacs.desktop
+**/.DS_Store
+.AppleDouble
+.LSOverride
+
+# Credentials & secrets (CRITICAL)
+.env
+.envrc
+.env.local
+.env.*.local
+.authinfo
+.authinfo.gpg
+.netrc
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+id_ecdsa*
+known_hosts
+token
+credentials
+.gnupg/
+
+# Databases
+*.sqlite
+*.db
+org-roam.db
+
+# OS & editor artifacts
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Build artifacts
+*.pyc
+__pycache__/
+node_modules/
+target/
